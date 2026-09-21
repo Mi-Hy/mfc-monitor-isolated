@@ -1,4 +1,3 @@
-```python
 import time
 from statistics import median
 
@@ -245,4 +244,3 @@ if voltage_data:
 
 
 update_yaml_flag("activity", "voltage", 0)
-```
