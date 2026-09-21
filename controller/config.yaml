@@ -1,0 +1,31 @@
+activity:
+  load: 0
+  system: 0
+  voltage: 0
+automations:
+  auto_load_poll: 0
+  auto_sys_poll: 0
+  auto_volt_poll: 0
+  update: 1
+fixed_configurations:
+  device_name: MFC02
+  firmware_version: v0.0.1
+influxdb:
+  bucket: mfc-data
+  org: Dramco
+  read-token: XmwKq3OpJc_0iIVacO2Hr4RElQmyUuVXGCzHGYLV7KDuGcdwwjmhlcgyob-HruaaLYfuHYHE4c7i4vhoSQtsiw==
+  token: 5Ivo3RqurDOrJIswBwJcOAbCOOWmQjGAw-0mRcIlMIWADTHh-eNS-gKmR1R1e9vb54hmq6-ICHd5J0JlpkSVBg==
+  url: https://influxdb.dramcoserver.be/
+measurement_mode:
+  device_mode: individual
+timer_settings:
+  load_interval_hour: 0
+  load_interval_minute: 10
+  load_interval_second: 0
+  sys_interval_hour: 0
+  sys_interval_minute: 10
+  sys_interval_second: 0
+  update: 1
+  volt_interval_hour: 0
+  volt_interval_minute: 55
+  volt_interval_second: 0

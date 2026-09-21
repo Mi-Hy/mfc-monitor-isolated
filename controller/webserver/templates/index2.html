@@ -1,0 +1,1540 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Mi-Hy MFC Monitor</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --background: #f5f0df;
+            --paper: #fffaf0;
+            --white: #ffffff;
+            --ink: #141414;
+            --muted: #625f55;
+            --line: #252525;
+            --green: #b8ff42;
+            --green-dark: #176b32;
+            --yellow: #ffe55c;
+            --cyan: #b7eef5;
+            --red: #ff6b4a;
+            --purple: #d8c8ff;
+            --shadow: 0 16px 40px rgba(20, 20, 20, 0.08);
+            --radius: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-width: 320px;
+            scroll-behavior: smooth;
+            background: var(--background);
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            color: var(--ink);
+            background:
+                linear-gradient(90deg, rgba(20, 20, 20, 0.045) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(20, 20, 20, 0.045) 1px, transparent 1px),
+                var(--background);
+            background-size: 28px 28px;
+        }
+
+        button,
+        input,
+        a {
+            font: inherit;
+        }
+
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 4px solid var(--cyan);
+            outline-offset: 3px;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        p,
+        h1,
+        h2,
+        h3 {
+            overflow-wrap: anywhere;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .site-header {
+            border-bottom: 3px solid var(--line);
+            background: var(--paper);
+        }
+
+        .header-inner {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr) auto;
+            gap: 36px;
+            align-items: end;
+            width: min(1440px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 28px 0 30px;
+        }
+
+        .brand {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 72px;
+            height: 72px;
+            border: 3px solid var(--line);
+            background: var(--green);
+            font-size: 42px;
+            font-weight: 950;
+            line-height: 1;
+        }
+
+        .brand-text {
+            font-weight: 900;
+            line-height: 1.05;
+            text-transform: uppercase;
+        }
+
+        .header-copy {
+            min-width: 0;
+            max-width: 850px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.7rem, 5.2vw, 5.2rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+
+        .header-copy > p:last-child {
+            max-width: 740px;
+            margin: 14px 0 0;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.55;
+        }
+
+        .device-summary {
+            display: grid;
+            min-width: 210px;
+            border: 3px solid var(--line);
+            background: var(--white);
+            box-shadow: 6px 6px 0 var(--line);
+        }
+
+        .device-summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 10px 12px;
+        }
+
+        .device-summary-row + .device-summary-row {
+            border-top: 2px solid var(--line);
+        }
+
+        .device-summary-row span {
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 850;
+            text-transform: uppercase;
+        }
+
+        .device-summary-row strong {
+            font-size: 0.88rem;
+        }
+
+        .app-shell {
+            width: min(1440px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 24px 0 48px;
+        }
+
+        .tab-list {
+            display: grid;
+            grid-template-columns: minmax(180px, 1fr) 30px minmax(180px, 1fr) 30px minmax(180px, 1fr);
+            align-items: center;
+            margin: 0 0 24px;
+        }
+
+        .tab-link {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            min-height: 86px;
+            padding: 13px 15px;
+            border: 3px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--paper);
+            color: var(--ink);
+            text-align: left;
+            cursor: pointer;
+            transition: transform 120ms ease, background-color 120ms ease;
+        }
+
+        .tab-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-link[aria-selected="true"] {
+            background: var(--green);
+            box-shadow: 6px 6px 0 var(--line);
+        }
+
+        .tab-number {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 30px;
+            border: 2px solid var(--line);
+            background: var(--yellow);
+            font-size: 0.78rem;
+            font-weight: 900;
+        }
+
+        .tab-label {
+            display: grid;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .tab-label strong {
+            font-size: 0.96rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .tab-label small {
+            color: var(--muted);
+            font-size: 0.76rem;
+            line-height: 1.2;
+        }
+
+        .tab-connector {
+            height: 3px;
+            background: var(--line);
+        }
+
+        .panel-intro {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: end;
+            margin-bottom: 20px;
+            padding: 4px 0;
+        }
+
+        .panel-intro h2 {
+            margin: 0;
+            font-size: clamp(1.65rem, 3vw, 2.5rem);
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .panel-intro > p {
+            max-width: 610px;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        .tool-panel,
+        .action-card,
+        .schedule-card {
+            min-width: 0;
+            border: 3px solid var(--line);
+            background: var(--paper);
+            box-shadow: var(--shadow);
+        }
+
+        .tool-panel {
+            padding: 20px;
+        }
+
+        .tool-panel--wide {
+            grid-column: 1 / -1;
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: start;
+            margin-bottom: 18px;
+        }
+
+        .panel-heading h3,
+        .action-card h3,
+        .schedule-card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            line-height: 1.15;
+            text-transform: uppercase;
+        }
+
+        .panel-copy {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .status-chip {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            min-height: 28px;
+            padding: 3px 9px;
+            border: 2px solid var(--line);
+            background: var(--white);
+            font-size: 0.72rem;
+            font-weight: 900;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .status-chip[data-tone="running"],
+        .status-chip[data-tone="ready"] {
+            background: var(--green);
+        }
+
+        .status-chip[data-tone="queued"] {
+            background: var(--yellow);
+        }
+
+        .status-chip[data-tone="offline"],
+        .status-chip[data-tone="error"] {
+            background: var(--red);
+        }
+
+        .clock-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .clock-value {
+            display: grid;
+            gap: 5px;
+            min-width: 0;
+            padding: 15px;
+            border: 2px solid var(--line);
+            background: var(--cyan);
+        }
+
+        .clock-value span {
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .clock-value strong {
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .mode-panel {
+            transition: background-color 140ms ease;
+        }
+
+        .mode-panel[data-mode="individual"] {
+            background: var(--paper);
+        }
+
+        .mode-panel[data-mode="series"] {
+            background: #f1ebff;
+        }
+
+        .mode-visual {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            margin: 18px 0;
+        }
+
+        .mode-cell {
+            display: grid;
+            place-items: center;
+            min-height: 54px;
+            border: 2px solid var(--line);
+            background: var(--green);
+            font-size: 0.78rem;
+            font-weight: 900;
+        }
+
+        .mode-link {
+            width: 20px;
+            height: 3px;
+            background: var(--line);
+        }
+
+        .mode-panel[data-mode="individual"] .mode-link {
+            opacity: 0.2;
+        }
+
+        .tool-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .tool-link {
+            display: grid;
+            gap: 5px;
+            min-height: 96px;
+            padding: 15px;
+            border: 2px solid var(--line);
+            background: var(--white);
+            text-decoration: none;
+            transition: transform 120ms ease, box-shadow 120ms ease;
+        }
+
+        .tool-link:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--line);
+        }
+
+        .tool-link--influx {
+            background: var(--cyan);
+        }
+
+        .tool-link--grafana {
+            background: #ffd29f;
+        }
+
+        .tool-link strong {
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .tool-link span {
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            min-height: 320px;
+            padding: 20px;
+        }
+
+        .action-index,
+        .schedule-index {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 38px;
+            margin-bottom: 18px;
+            border: 2px solid var(--line);
+            background: var(--yellow);
+            font-size: 0.82rem;
+            font-weight: 900;
+        }
+
+        .action-card p {
+            margin: 9px 0 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .action-note {
+            align-self: end;
+            padding-top: 16px;
+            border-top: 2px solid rgba(20, 20, 20, 0.16);
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        .primary-button,
+        .secondary-button,
+        .automation-button {
+            min-height: 48px;
+            padding: 10px 14px;
+            border: 3px solid var(--line);
+            border-radius: var(--radius);
+            color: var(--ink);
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+        }
+
+        .primary-button {
+            background: var(--green);
+        }
+
+        .secondary-button {
+            background: var(--white);
+        }
+
+        .automation-button {
+            width: 100%;
+            background: var(--green);
+        }
+
+        .primary-button:hover,
+        .secondary-button:hover,
+        .automation-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--line);
+        }
+
+        .primary-button:active,
+        .secondary-button:active,
+        .automation-button:active {
+            transform: translate(0, 0);
+            box-shadow: none;
+        }
+
+        .primary-button.is-queued,
+        .primary-button:disabled {
+            background: var(--yellow);
+            cursor: wait;
+        }
+
+        .automation-button[aria-pressed="true"] {
+            background: var(--red);
+        }
+
+        .automation-button[aria-pressed="true"]::before {
+            content: "■ ";
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .schedule-card {
+            display: grid;
+            gap: 18px;
+            padding: 20px;
+        }
+
+        .schedule-card.is-running {
+            box-shadow: 7px 7px 0 var(--green-dark);
+        }
+
+        .schedule-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .schedule-head .schedule-index {
+            margin: 0;
+        }
+
+        .countdown-box {
+            display: grid;
+            gap: 4px;
+            padding: 14px;
+            border: 2px solid var(--line);
+            background: var(--cyan);
+        }
+
+        .countdown-box span {
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .countdown-box strong {
+            font-size: clamp(1.35rem, 2.6vw, 2rem);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+        }
+
+        .interval-fieldset {
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        .interval-fieldset legend {
+            width: 100%;
+            margin-bottom: 9px;
+            padding: 0;
+            font-size: 0.78rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .time-field {
+            display: grid;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .time-field input {
+            width: 100%;
+            min-width: 0;
+            height: 48px;
+            padding: 8px;
+            border: 2px solid var(--line);
+            border-radius: 0;
+            background: var(--white);
+            color: var(--ink);
+            font-weight: 850;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .time-field span {
+            color: var(--muted);
+            font-size: 0.7rem;
+            font-weight: 850;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .interval-fieldset.has-error input {
+            border-color: #a8291a;
+            background: #fff1ed;
+        }
+
+        .form-help {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 0.75rem;
+            line-height: 1.35;
+        }
+
+        .automation-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: center;
+            margin-top: 20px;
+            padding: 18px 20px;
+            border: 3px solid var(--line);
+            background: var(--paper);
+        }
+
+        .automation-footer p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.4;
+        }
+
+        .automation-footer .primary-button {
+            flex: 0 0 auto;
+            min-width: 210px;
+        }
+
+        .site-footer {
+            border-top: 3px solid var(--line);
+            background: var(--paper);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            width: min(1440px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 22px 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-inner p {
+            margin: 0;
+        }
+
+        .toast {
+            position: fixed;
+            z-index: 100;
+            top: 18px;
+            left: 50%;
+            width: min(520px, calc(100% - 32px));
+            padding: 14px 16px;
+            border: 3px solid var(--line);
+            background: var(--green);
+            box-shadow: 7px 7px 0 var(--line);
+            font-weight: 800;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, calc(-100% - 40px));
+            transition: transform 180ms ease, opacity 180ms ease, visibility 180ms ease;
+        }
+
+        .toast.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+
+        .toast[data-tone="error"] {
+            background: var(--red);
+        }
+
+        @media (max-width: 1120px) {
+            .header-inner {
+                grid-template-columns: 250px minmax(0, 1fr);
+            }
+
+            .device-summary {
+                grid-column: 1 / -1;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .device-summary-row + .device-summary-row {
+                border-top: 0;
+                border-left: 2px solid var(--line);
+            }
+
+            .action-grid,
+            .schedule-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 780px) {
+            .header-inner {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                align-items: start;
+            }
+
+            .brand {
+                max-width: 280px;
+            }
+
+            .device-summary {
+                grid-column: auto;
+            }
+
+            .tab-list {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .tab-link {
+                min-height: 72px;
+            }
+
+            .tab-connector {
+                display: none;
+            }
+
+            .panel-intro {
+                display: grid;
+                align-items: start;
+            }
+
+            .panel-grid,
+            .action-grid,
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-panel--wide {
+                grid-column: auto;
+            }
+
+            .action-card {
+                min-height: 0;
+            }
+
+            .automation-footer {
+                display: grid;
+            }
+
+            .automation-footer .primary-button {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .header-inner,
+            .app-shell,
+            .footer-inner {
+                width: min(100% - 24px, 1440px);
+            }
+
+            .device-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .device-summary-row + .device-summary-row {
+                border-top: 2px solid var(--line);
+                border-left: 0;
+            }
+
+            .clock-grid,
+            .tool-links {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                display: grid;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="output" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="https://www.mi-hy.eu/mudtronics/" target="_blank" rel="noreferrer">
+                <span class="brand-mark" aria-hidden="true">M</span>
+                <span class="brand-text">Mi-Hy<br>MudTronics</span>
+            </a>
+
+            <div class="header-copy">
+                <p class="eyebrow">Microbial fuel cell monitoring</p>
+                <h1>MFC monitor</h1>
+                <p>Configure the monitoring device, run a measurement on demand, or schedule recurring measurements from one clear dashboard.</p>
+            </div>
+
+            <div class="device-summary" aria-label="Device information">
+                <div class="device-summary-row">
+                    <span>Device</span>
+                    <strong>{{ config.get('fixed_configurations', {}).get('device_name', 'Unknown') }}</strong>
+                </div>
+                <div class="device-summary-row">
+                    <span>Firmware</span>
+                    <strong>{{ config.get('fixed_configurations', {}).get('firmware_version', 'Unknown') }}</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-shell">
+        <nav class="tab-list" role="tablist" aria-label="Dashboard sections">
+            <button class="tab-link" id="tab-general" type="button" role="tab" aria-selected="true" aria-controls="panel-general" data-tab="general">
+                <span class="tab-number">01</span>
+                <span class="tab-label">
+                    <strong>General configuration</strong>
+                    <small>Device, time and mode</small>
+                </span>
+            </button>
+            <span class="tab-connector" aria-hidden="true"></span>
+            <button class="tab-link" id="tab-manual" type="button" role="tab" aria-selected="false" aria-controls="panel-manual" tabindex="-1" data-tab="manual">
+                <span class="tab-number">02</span>
+                <span class="tab-label">
+                    <strong>One measurement</strong>
+                    <small>Run a task immediately</small>
+                </span>
+            </button>
+            <span class="tab-connector" aria-hidden="true"></span>
+            <button class="tab-link" id="tab-automated" type="button" role="tab" aria-selected="false" aria-controls="panel-automated" tabindex="-1" data-tab="automated">
+                <span class="tab-number">03</span>
+                <span class="tab-label">
+                    <strong>Automated measurements</strong>
+                    <small>Schedules and timers</small>
+                </span>
+            </button>
+        </nav>
+
+        <section class="tab-panel" id="panel-general" role="tabpanel" aria-labelledby="tab-general" data-panel="general">
+            <div class="panel-intro">
+                <div>
+                    <p class="eyebrow">General</p>
+                    <h2>Device configuration</h2>
+                </div>
+                <p>Check the controller clock, choose how the MFCs are connected, and open the related data tools.</p>
+            </div>
+
+            <div class="panel-grid">
+                <article class="tool-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">Controller clock</p>
+                            <h3>Raspberry Pi system</h3>
+                            <p class="panel-copy">This UTC clock is used for all measurement timestamps.</p>
+                        </div>
+                        <span id="connectionStatus" class="status-chip" data-tone="queued">Connecting</span>
+                    </div>
+                    <div class="clock-grid">
+                        <div class="clock-value">
+                            <span>Date</span>
+                            <strong id="rpi_date">--/--/----</strong>
+                        </div>
+                        <div class="clock-value">
+                            <span>UTC time</span>
+                            <strong id="rpi_time">--h --m --s</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="modeContainer" class="tool-panel mode-panel" data-mode="individual">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">Measurement topology</p>
+                            <h3 id="modeTitle">Individual mode</h3>
+                            <p id="modeDescription" class="panel-copy">Measure each connected MFC as an individual cell.</p>
+                        </div>
+                        <span id="modeBadge" class="status-chip" data-tone="ready">Individual</span>
+                    </div>
+                    <div class="mode-visual" aria-hidden="true">
+                        <span class="mode-cell">MFC 1</span>
+                        <span class="mode-link"></span>
+                        <span class="mode-cell">MFC 2</span>
+                        <span class="mode-link"></span>
+                        <span class="mode-cell">MFC 3</span>
+                    </div>
+                    <button id="deviceModeButton" class="secondary-button" type="button">Switch to series mode</button>
+                </article>
+
+                <article class="tool-panel tool-panel--wide">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">Measurement data</p>
+                            <h3>Related tools</h3>
+                            <p class="panel-copy">Inspect stored measurements or open the visual monitoring dashboard.</p>
+                        </div>
+                    </div>
+                    <div class="tool-links">
+                        <a id="influx" class="tool-link tool-link--influx" target="_blank" rel="noreferrer">
+                            <strong>InfluxDB ↗</strong>
+                            <span>Browse and query the raw time-series measurements.</span>
+                        </a>
+                        <a id="grafana" class="tool-link tool-link--grafana" target="_blank" rel="noreferrer">
+                            <strong>Grafana ↗</strong>
+                            <span>View measurement trends and monitoring dashboards.</span>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="tab-panel" id="panel-manual" role="tabpanel" aria-labelledby="tab-manual" data-panel="manual" hidden>
+            <div class="panel-intro">
+                <div>
+                    <p class="eyebrow">On demand</p>
+                    <h2>Run one measurement</h2>
+                </div>
+                <p>Choose one task below. Its status remains queued while the controller is processing it.</p>
+            </div>
+
+            <div class="action-grid">
+                <article class="action-card">
+                    <div>
+                        <div class="panel-heading">
+                            <span class="action-index">01</span>
+                            <span id="manualStatusSystem" class="status-chip" data-tone="ready">Ready</span>
+                        </div>
+                        <h3>Poll system sensors</h3>
+                        <p>Read the Raspberry Pi system sensors and store a fresh health measurement.</p>
+                    </div>
+                    <div class="action-note">Use this to check controller temperature and other system values without waiting for the schedule.</div>
+                    <button id="btn11" class="primary-button" type="button">Poll sensors now</button>
+                </article>
+
+                <article class="action-card">
+                    <div>
+                        <div class="panel-heading">
+                            <span class="action-index">02</span>
+                            <span id="manualStatusVoltage" class="status-chip" data-tone="ready">Ready</span>
+                        </div>
+                        <h3>Voltage measurement</h3>
+                        <p>Capture the voltage values for the connected microbial fuel cells.</p>
+                    </div>
+                    <div class="action-note">The active individual or series mode from General configuration is used for this measurement.</div>
+                    <button id="btn12" class="primary-button" type="button">Measure voltage now</button>
+                </article>
+
+                <!-- <article class="action-card">
+                    <div>
+                        <div class="panel-heading">
+                            <span class="action-index">03</span>
+                            <span id="manualStatusLoad" class="status-chip" data-tone="ready">Ready</span>
+                        </div>
+                        <h3>Resistive sweep</h3>
+                        <p>Run a complete load sweep to characterize the MFC power output.</p>
+                    </div>
+                    <div class="action-note">A sweep can take longer than the other tasks. Keep the hardware connected until it finishes.</div>
+                    <button id="btn13" class="primary-button" type="button">Start sweep now</button>
+                </article> -->
+                <article class="action-card under-construction">
+                    <div>
+                        <div class="panel-heading">
+                            <span class="action-index">03</span>
+                            <span id="manualStatusLoad" class="status-chip" data-tone="warning">
+                                🚧 Under Construction
+                            </span>
+                        </div>
+
+                        <h3>Resistive sweep</h3>
+
+                        <p>
+                            This feature is currently under development and is not yet available.
+                            It will be enabled in a future update.
+                        </p>
+                    </div>
+
+                    <div class="action-note">
+                        🚧 Work in progress. The sweep functionality is being implemented and tested.
+                    </div>
+
+                    <!-- <button id="btn13" class="primary-button" type="button" disabled>
+                        Coming Soon
+                    </button> -->
+                </article>
+            </div>
+        </section>
+
+        <section class="tab-panel" id="panel-automated" role="tabpanel" aria-labelledby="tab-automated" data-panel="automated" hidden>
+            <div class="panel-intro">
+                <div>
+                    <p class="eyebrow">Recurring tasks</p>
+                    <h2>Automated measurements</h2>
+                </div>
+                <p>Set an interval for each task, save the timer settings, then enable the automations you want to run.</p>
+            </div>
+
+            <form id="autoMeasurementForm" novalidate>
+                <div class="schedule-grid">
+                    <article id="scheduleSystem" class="schedule-card">
+                        <div class="schedule-head">
+                            <span class="schedule-index">01</span>
+                            <span id="autoStatusSystem" class="status-chip">Off</span>
+                        </div>
+                        <div>
+                            <h3>System sensors</h3>
+                            <p class="panel-copy">Periodically poll the controller's system sensors.</p>
+                        </div>
+                        <div class="countdown-box">
+                            <span>Next poll in</span>
+                            <strong id="sys_countdown">--h --m --s</strong>
+                        </div>
+                        <fieldset id="sysIntervalGroup" class="interval-fieldset">
+                            <legend>Measurement interval</legend>
+                            <div class="time-inputs">
+                                <label class="time-field">
+                                    <input type="number" id="sys_interval_hour" min="0" max="999" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('sys_interval_hour', '') }}" aria-label="System interval hours">
+                                    <span>Hours</span>
+                                </label>
+                                <label class="time-field">
+                                    <input type="number" id="sys_interval_minute" min="0" max="59" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('sys_interval_minute', '') }}" aria-label="System interval minutes">
+                                    <span>Minutes</span>
+                                </label>
+                                <label class="time-field">
+                                    <input type="number" id="sys_interval_second" min="0" max="59" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('sys_interval_second', '') }}" aria-label="System interval seconds">
+                                    <span>Seconds</span>
+                                </label>
+                            </div>
+                            <p class="form-help">Must be longer than zero seconds.</p>
+                        </fieldset>
+                        <button id="btn20" class="automation-button" type="button" aria-pressed="false">Enable automation</button>
+                    </article>
+
+                    <article id="scheduleVoltage" class="schedule-card">
+                        <div class="schedule-head">
+                            <span class="schedule-index">02</span>
+                            <span id="autoStatusVoltage" class="status-chip">Off</span>
+                        </div>
+                        <div>
+                            <h3>Voltage measurement</h3>
+                            <p class="panel-copy">Periodically capture the connected MFC voltages.</p>
+                        </div>
+                        <div class="countdown-box">
+                            <span>Next measurement in</span>
+                            <strong id="volt_countdown">--h --m --s</strong>
+                        </div>
+                        <fieldset id="voltIntervalGroup" class="interval-fieldset">
+                            <legend>Measurement interval</legend>
+                            <div class="time-inputs">
+                                <label class="time-field">
+                                    <input type="number" id="volt_interval_hour" min="0" max="999" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('volt_interval_hour', '') }}" aria-label="Voltage interval hours">
+                                    <span>Hours</span>
+                                </label>
+                                <label class="time-field">
+                                    <input type="number" id="volt_interval_minute" min="0" max="59" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('volt_interval_minute', '') }}" aria-label="Voltage interval minutes">
+                                    <span>Minutes</span>
+                                </label>
+                                <label class="time-field">
+                                    <input type="number" id="volt_interval_second" min="0" max="59" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('volt_interval_second', '') }}" aria-label="Voltage interval seconds">
+                                    <span>Seconds</span>
+                                </label>
+                            </div>
+                            <p class="form-help">Must be longer than zero seconds.</p>
+                        </fieldset>
+                        <button id="btn21" class="automation-button" type="button" aria-pressed="false">Enable automation</button>
+                    </article>
+
+                    <article id="scheduleLoad" class="schedule-card">
+                        <div class="schedule-head">
+                            <span class="schedule-index">03</span>
+                            <span id="autoStatusLoad" class="status-chip">Off</span>
+                        </div>
+                        <div>
+                            <h3>Resistive sweep</h3>
+                            <p class="panel-copy">Periodically run the complete resistive load sweep.</p>
+                        </div>
+                        <div class="countdown-box">
+                            <span>Next sweep in</span>
+                            <strong id="load_countdown">--h --m --s</strong>
+                        </div>
+                        <fieldset id="loadIntervalGroup" class="interval-fieldset">
+                            <legend>Measurement interval</legend>
+                            <div class="time-inputs">
+                                <label class="time-field">
+                                    <input type="number" id="load_interval_hour" min="0" max="999" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('load_interval_hour', '') }}" aria-label="Resistive sweep interval hours">
+                                    <span>Hours</span>
+                                </label>
+                                <label class="time-field">
+                                    <input type="number" id="load_interval_minute" min="0" max="59" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('load_interval_minute', '') }}" aria-label="Resistive sweep interval minutes">
+                                    <span>Minutes</span>
+                                </label>
+                                <label class="time-field">
+                                    <input type="number" id="load_interval_second" min="0" max="59" step="1" required inputmode="numeric" value="{{ config.get('timer_settings', {}).get('load_interval_second', '') }}" aria-label="Resistive sweep interval seconds">
+                                    <span>Seconds</span>
+                                </label>
+                            </div>
+                            <p class="form-help">Must be longer than zero seconds.</p>
+                        </fieldset>
+                        <button id="btn22" class="automation-button" type="button" aria-pressed="false">Enable automation</button>
+                    </article>
+                </div>
+
+                <div class="automation-footer">
+                    <p>Changing a field does not interrupt a running timer until you save all timer settings.</p>
+                    <button id="saveTimersButton" class="primary-button" type="submit">Save timer settings</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p>Mi-Hy MFC monitoring dashboard</p>
+            <p>Dramco is part of KU Leuven. <a href="https://dramco.be" target="_blank" rel="noreferrer">Visit dramco.be ↗</a></p>
+        </div>
+    </footer>
+
+    <script>
+        (() => {
+            "use strict";
+
+            const initialState = {
+                manual: {
+                    11: Number({{ config.get('activity', {}).get('system', 0) | tojson }}) !== 0,
+                    12: Number({{ config.get('activity', {}).get('voltage', 0) | tojson }}) !== 0,
+                    13: Number({{ config.get('activity', {}).get('load', 0) | tojson }}) !== 0
+                },
+                automation: {
+                    20: Number({{ config.get('automations', {}).get('auto_sys_poll', 0) | tojson }}) !== 0,
+                    21: Number({{ config.get('automations', {}).get('auto_volt_poll', 0) | tojson }}) !== 0,
+                    22: Number({{ config.get('automations', {}).get('auto_load_poll', 0) | tojson }}) !== 0
+                },
+                mode: {{ config.get('measurement_mode', {}).get('device_mode', 'individual') | tojson }}
+            };
+
+            const manualMeta = {
+                11: { key: "system", button: "btn11", status: "manualStatusSystem", idle: "Poll sensors now" },
+                12: { key: "voltage", button: "btn12", status: "manualStatusVoltage", idle: "Measure voltage now" },
+                13: { key: "load", button: "btn13", status: "manualStatusLoad", idle: "Start sweep now" }
+            };
+
+            const automationMeta = {
+                20: { key: "auto_sys_poll", button: "btn20", status: "autoStatusSystem", card: "scheduleSystem" },
+                21: { key: "auto_volt_poll", button: "btn21", status: "autoStatusVoltage", card: "scheduleVoltage" },
+                22: { key: "auto_load_poll", button: "btn22", status: "autoStatusLoad", card: "scheduleLoad" }
+            };
+
+            const intervalGroups = [
+                { prefix: "sys", group: "sysIntervalGroup", label: "system sensor" },
+                { prefix: "volt", group: "voltIntervalGroup", label: "voltage measurement" },
+                { prefix: "load", group: "loadIntervalGroup", label: "resistive sweep" }
+            ];
+
+            let toastTimer;
+            let currentMode = initialState.mode === "series" ? "series" : "individual";
+
+            const byId = (id) => document.getElementById(id);
+
+            function showToast(message, tone = "success") {
+                const toast = byId("output");
+                window.clearTimeout(toastTimer);
+                toast.textContent = message;
+                toast.dataset.tone = tone;
+                toast.classList.add("is-visible");
+                toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 4500);
+            }
+
+            async function requestJson(url, options) {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`Request failed (${response.status})`);
+                }
+                const result = await response.json();
+                if (result.status === "error") {
+                    throw new Error(result.message || "The controller rejected the request.");
+                }
+                return result;
+            }
+
+            async function saveConfig(data) {
+                return requestJson("/save_config", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            }
+
+            function activateTab(name, moveFocus = false) {
+                const selected = document.querySelector(`[data-tab="${name}"]`);
+                if (!selected) return;
+
+                document.querySelectorAll("[data-tab]").forEach((tab) => {
+                    const active = tab === selected;
+                    tab.setAttribute("aria-selected", String(active));
+                    tab.tabIndex = active ? 0 : -1;
+                });
+
+                document.querySelectorAll("[data-panel]").forEach((panel) => {
+                    panel.hidden = panel.dataset.panel !== name;
+                });
+
+                if (moveFocus) selected.focus();
+                history.replaceState(null, "", `#${name}`);
+            }
+
+            function configureTabs() {
+                const tabs = Array.from(document.querySelectorAll("[data-tab]"));
+
+                tabs.forEach((tab, index) => {
+                    tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+                    tab.addEventListener("keydown", (event) => {
+                        let nextIndex = index;
+                        if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % tabs.length;
+                        else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + tabs.length) % tabs.length;
+                        else if (event.key === "Home") nextIndex = 0;
+                        else if (event.key === "End") nextIndex = tabs.length - 1;
+                        else return;
+
+                        event.preventDefault();
+                        activateTab(tabs[nextIndex].dataset.tab, true);
+                    });
+                });
+
+                const requestedTab = window.location.hash.slice(1);
+                activateTab(tabs.some((tab) => tab.dataset.tab === requestedTab) ? requestedTab : "general");
+            }
+
+            function renderManualButton(number, active) {
+                const meta = manualMeta[number];
+                const button = byId(meta.button);
+                const status = byId(meta.status);
+
+                button.disabled = active;
+                button.classList.toggle("is-queued", active);
+                button.textContent = active ? "Queued / running…" : meta.idle;
+                status.textContent = active ? "Queued" : "Ready";
+                status.dataset.tone = active ? "queued" : "ready";
+            }
+
+            function renderAutomationButton(number, enabled) {
+                const meta = automationMeta[number];
+                const button = byId(meta.button);
+                const status = byId(meta.status);
+                const card = byId(meta.card);
+
+                button.setAttribute("aria-pressed", String(enabled));
+                button.textContent = enabled ? "Disable automation" : "Enable automation";
+                status.textContent = enabled ? "Running" : "Off";
+                status.dataset.tone = enabled ? "running" : "off";
+                card.classList.toggle("is-running", enabled);
+            }
+
+            async function triggerManualMeasurement(number) {
+                const meta = manualMeta[number];
+                if (!meta || initialState.manual[number]) return;
+
+                initialState.manual[number] = true;
+                renderManualButton(number, true);
+
+                try {
+                    await saveConfig({ activity: { [meta.key]: 1 } });
+                    showToast("Measurement queued on the controller.");
+                } catch (error) {
+                    initialState.manual[number] = false;
+                    renderManualButton(number, false);
+                    showToast(`Could not queue the measurement: ${error.message}`, "error");
+                }
+            }
+
+            async function toggleAutomation(number) {
+                const meta = automationMeta[number];
+                if (!meta) return;
+
+                const previous = initialState.automation[number];
+                const next = !previous;
+                initialState.automation[number] = next;
+                renderAutomationButton(number, next);
+
+                try {
+                    await saveConfig({ automations: { [meta.key]: next ? 1 : 0, update: 1 } });
+                    showToast(next ? "Automation enabled." : "Automation disabled.");
+                } catch (error) {
+                    initialState.automation[number] = previous;
+                    renderAutomationButton(number, previous);
+                    showToast(`Could not update the automation: ${error.message}`, "error");
+                }
+            }
+
+            function updateModeLayout() {
+                const isSeries = currentMode === "series";
+                const container = byId("modeContainer");
+                container.dataset.mode = currentMode;
+                byId("modeTitle").textContent = isSeries ? "Series mode" : "Individual mode";
+                byId("modeBadge").textContent = isSeries ? "Series" : "Individual";
+                byId("modeBadge").dataset.tone = "ready";
+                byId("modeDescription").textContent = isSeries
+                    ? "Measure the connected MFCs as a series-connected group."
+                    : "Measure each connected MFC as an individual cell.";
+                byId("deviceModeButton").textContent = isSeries
+                    ? "Switch to individual mode"
+                    : "Switch to series mode";
+            }
+
+            async function toggleDeviceMode() {
+                const previous = currentMode;
+                currentMode = currentMode === "individual" ? "series" : "individual";
+                updateModeLayout();
+
+                try {
+                    await saveConfig({ measurement_mode: { device_mode: currentMode } });
+                    showToast(`Measurement mode changed to ${currentMode}.`);
+                } catch (error) {
+                    currentMode = previous;
+                    updateModeLayout();
+                    showToast(`Could not change measurement mode: ${error.message}`, "error");
+                }
+            }
+
+            function formatPart(value, length = 2) {
+                const number = Number(value);
+                return Number.isFinite(number) ? String(number).padStart(length, "0") : "--";
+            }
+
+            function updateCountdown(data) {
+                byId("rpi_date").textContent = `${formatPart(data.rpi_day)}/${formatPart(data.rpi_mon)}/${formatPart(data.rpi_yea, 4)}`;
+                byId("rpi_time").textContent = `${formatPart(data.rpi_h)}h ${formatPart(data.rpi_m)}m ${formatPart(data.rpi_s)}s`;
+                byId("sys_countdown").textContent = `${formatPart(data.sys_ch)}h ${formatPart(data.sys_cm)}m ${formatPart(data.sys_cs)}s`;
+                byId("volt_countdown").textContent = `${formatPart(data.volt_ch)}h ${formatPart(data.volt_cm)}m ${formatPart(data.volt_cs)}s`;
+                byId("load_countdown").textContent = `${formatPart(data.load_ch)}h ${formatPart(data.load_cm)}m ${formatPart(data.load_cs)}s`;
+            }
+
+            function updateConfigurationState(config) {
+                const activity = config.activity || {};
+                const manualValues = { 11: activity.system, 12: activity.voltage, 13: activity.load };
+                Object.entries(manualValues).forEach(([number, value]) => {
+                    const active = Number(value) !== 0;
+                    initialState.manual[number] = active;
+                    renderManualButton(number, active);
+                });
+
+                const automations = config.automations || {};
+                const automationValues = {
+                    20: automations.auto_sys_poll,
+                    21: automations.auto_volt_poll,
+                    22: automations.auto_load_poll
+                };
+                Object.entries(automationValues).forEach(([number, value]) => {
+                    if (value === undefined || value === null) return;
+                    const enabled = Number(value) !== 0;
+                    initialState.automation[number] = enabled;
+                    renderAutomationButton(number, enabled);
+                });
+            }
+
+            function updateConnectionStatus(connected) {
+                const status = byId("connectionStatus");
+                status.textContent = connected ? "Live" : "Offline";
+                status.dataset.tone = connected ? "running" : "offline";
+            }
+
+            async function pollController() {
+                const [countdownResult, configResult] = await Promise.allSettled([
+                    requestJson("/get_countdown_vars"),
+                    requestJson("/get_config")
+                ]);
+
+                if (countdownResult.status === "fulfilled") {
+                    updateCountdown(countdownResult.value);
+                    updateConnectionStatus(true);
+                } else {
+                    updateConnectionStatus(false);
+                }
+
+                if (configResult.status === "fulfilled") {
+                    updateConfigurationState(configResult.value);
+                }
+
+                window.setTimeout(pollController, document.hidden ? 4000 : 1000);
+            }
+
+            function readInterval(prefix, groupId, label) {
+                const group = byId(groupId);
+                const hours = byId(`${prefix}_interval_hour`);
+                const minutes = byId(`${prefix}_interval_minute`);
+                const seconds = byId(`${prefix}_interval_second`);
+                const inputs = [hours, minutes, seconds];
+
+                const invalidInput = inputs.find((input) => !input.checkValidity() || !Number.isInteger(input.valueAsNumber));
+                const totalSeconds = (hours.valueAsNumber * 3600) + (minutes.valueAsNumber * 60) + seconds.valueAsNumber;
+                const invalid = Boolean(invalidInput) || !Number.isFinite(totalSeconds) || totalSeconds <= 0;
+                group.classList.toggle("has-error", invalid);
+
+                if (invalid) {
+                    (invalidInput || hours).focus();
+                    throw new Error(`Enter a valid ${label} interval longer than zero seconds.`);
+                }
+
+                return {
+                    [`${prefix}_interval_hour`]: hours.valueAsNumber,
+                    [`${prefix}_interval_minute`]: minutes.valueAsNumber,
+                    [`${prefix}_interval_second`]: seconds.valueAsNumber
+                };
+            }
+
+            async function saveTimerSettings(event) {
+                event.preventDefault();
+                const button = byId("saveTimersButton");
+                let timerSettings = {};
+
+                try {
+                    intervalGroups.forEach(({ prefix, group, label }) => {
+                        timerSettings = { ...timerSettings, ...readInterval(prefix, group, label) };
+                    });
+                } catch (error) {
+                    showToast(error.message, "error");
+                    return;
+                }
+
+                button.disabled = true;
+                button.textContent = "Saving…";
+                try {
+                    await saveConfig({ timer_settings: { ...timerSettings, update: 1 } });
+                    showToast("All timer settings were saved.");
+                } catch (error) {
+                    showToast(`Could not save timer settings: ${error.message}`, "error");
+                } finally {
+                    button.disabled = false;
+                    button.textContent = "Save timer settings";
+                }
+            }
+
+            function configureExternalLinks() {
+                const serviceDomain = ".dramcoserver.be/";
+                byId("influx").href = `https://influxdb${serviceDomain}`;
+                byId("grafana").href = `https://grafana${serviceDomain}`;
+            }
+
+            function initialize() {
+                configureTabs();
+                configureExternalLinks();
+                updateModeLayout();
+
+                Object.entries(initialState.manual).forEach(([number, active]) => renderManualButton(number, active));
+                Object.entries(initialState.automation).forEach(([number, enabled]) => renderAutomationButton(number, enabled));
+
+                Object.keys(manualMeta).forEach((number) => {
+                    byId(manualMeta[number].button).addEventListener("click", () => triggerManualMeasurement(Number(number)));
+                });
+
+                Object.keys(automationMeta).forEach((number) => {
+                    byId(automationMeta[number].button).addEventListener("click", () => toggleAutomation(Number(number)));
+                });
+
+                byId("deviceModeButton").addEventListener("click", toggleDeviceMode);
+                byId("autoMeasurementForm").addEventListener("submit", saveTimerSettings);
+
+                intervalGroups.forEach(({ prefix, group }) => {
+                    ["hour", "minute", "second"].forEach((unit) => {
+                        byId(`${prefix}_interval_${unit}`).addEventListener("input", () => byId(group).classList.remove("has-error"));
+                    });
+                });
+
+                pollController();
+            }
+
+            initialize();
+        })();
+    </script>
+</body>
+</html>

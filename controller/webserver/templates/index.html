@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurement Configuration</title>
+    <style>
+        .header {
+            text-align: center;
+            padding: 5px;
+            /* font-size: 20px; */
+            top: 0;
+            /* border-radius: 8px; */
+            position: fixed; /* Zorgt ervoor dat de header altijd bovenaan blijft */
+            top: 0; /* Plaats de header bovenaan de pagina */
+            left: 0; /* Zorgt ervoor dat de header niet verschuift naar rechts */
+            width: 100%; /* Zorgt ervoor dat de header over de volledige breedte van de pagina wordt uitgerekt */
+            /* z-index: 1000; Zorgt ervoor dat de header boven andere inhoud komt */
+            border-bottom: 3px solid #9e9e9e;
+            /* border-bottom: 3px solid #FF5733; */
+            background-color: #323E4C;
+            /* background-color: #946161; */
+        }
+
+        /* border-bottom: 3px solid #FF5733; */
+        .device-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 0px;
+            padding: 0px;
+        }
+        body, h1, form, select, input, button {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-family: Arial, sans-serif;
+            max-width: 100%;
+        }
+        body {
+            margin-top: 160px;
+            background-color: #1B2938;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: #f8f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(153, 153, 153, 0.589);
+        }
+        p {
+            color: #d1d1d1;
+            /* margin-bottom: 20px; */
+            font-size: 20px;
+            /* text-align: center; */
+            margin: 2px;
+        }
+        h1 {
+            color: #2599BC;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        h2 {
+            color: #f8f8f8;
+            /* margin-bottom: 0px;*/
+            font-size: 40px;
+            text-align: center;
+            margin: 2px;
+        }
+        .styled-text {
+            color: #1B2938;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        form input,
+        form select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        form label {
+            display: block;
+            width: 100%;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            /* text-align: left; */
+        }
+        button {
+            background-color: #205694;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            width: 100%;
+            height: 75%;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        #deviceModeButton{
+            background-color: #242323;     /* Blauwe achtergrond */
+            /* centreren */
+            display: block;
+            margin: 20px auto; /* auto links en rechts zorgt voor centrering */
+        }
+        #deviceModeButton:hover {
+            background-color: #747474;   /* Donkerdere blauw */
+            cursor: pointer;
+        }
+        #startStopBtn {
+            background-color: #007d00;     /* Blauwe achtergrond */
+            color: white;                  /* Witte tekst */
+            border: none;                  /* Geen rand */
+            padding: 10px 20px;            /* Wat opvulling */
+            font-size: 16px;
+            border-radius: 5px;            /* Afgeronde hoeken */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            /* centreren */
+            display: block;
+            margin: 20px auto; /* auto links en rechts zorgt voor centrering */
+        }
+
+        #startStopBtn:hover {
+            background-color: #a4e690;     /* Donkerder blauw bij hover */
+        }
+        #output {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #e9ecef;
+            border-bottom: 3px solid #3a5675;
+            padding: 10px 20px;
+            color: #333;
+            text-align: center;
+            z-index: 9999;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        #timerBox {
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 20px;
+            background-color: #aedaf3;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .individual-mode {
+            background-color: #000000; /* Blauw voor Individual Mode */
+        }
+        .series-mode {
+            background-color: #6A1B9A; /* Oranje voor Series Mode */
+        }
+        #modeTitle {
+            color: rgb(255, 255, 255);
+        }
+        .grid-container {
+            display: grid;
+            /* display: flex; */
+            align-items: center;  
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+        .form-divider {
+            height: 1px;
+            background-color: #ccc;
+            margin: 10px 0;
+        }
+        footer{
+            background: #6b6b6b;
+            color: #862626;
+            font-size: 0.8rem;
+            padding: 10px 0px 10px 0px;
+        }
+        footer a, footer a:hover{
+            color: #9dcfff;
+        }
+        footer.text-muted{
+            color: rgba(0, 0, 0, 0.9) !important;
+        }
+        .footer_container {
+            padding: 10px;
+            text-align: center;
+        }
+        .button_container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        /* InfluxDB (blauw/turquoise stijl) */
+        .influx {
+            background-color: #22ADF6;
+        }
+
+        /* Grafana (oranje) */
+        .grafana {
+            background-color: #F46800;
+        }
+
+        /* optioneel hover effect */
+        .btn:hover {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+    <div id="output" style="display:none;"></div>
+    <div class="header">
+        <h2>Mi-Hy Project</h2>
+        <!-- <p>???</p> -->
+        <div class="device-name">
+            <p>Dashboard Device <span id="device-name-placeholder"></span>{{config.get('fixed_configurations').get('device_name')}}</p>
+            <p>Firmware: <span id="device-name-placeholder"></span>{{config.get('fixed_configurations').get('firmware_version')}}</p>
+        </div>
+    </div>
+
+    <div class="button_container">
+        <a id="influx"><button type="button">InfluxDB</button></a>
+        <a id="grafana"><button type="button">Grafana</button></a>
+    </div>
+
+    <div style="border-bottom: 3px solid #9e9e9e;"></div>
+
+    <div id="modeContainer" class="container individual-mode">
+        <h1 id="modeTitle">Individual Mode</h1>
+        <button id="deviceModeButton" onclick="toggleDeviceMode()">Switch to Series Mode</button>
+    </div>
+
+
+    <div class="container">
+        <h1>Raspberry Pi System</h1>
+        <form>
+            <div class='grid-container'>
+                <p class="styled-text">Internal date used for timestamps:</p>
+                <div id="timerBox"><span id="rpi_date">--/--/--</span></div>
+            </div>
+            <div class='grid-container'>
+                <p class="styled-text">Internal [UTC] time used for timestamps:</p>
+                <div id="timerBox"><span id="rpi_time">--h --m --s</span></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <h1>Manual Triggers</h1>
+        <div class='grid-container'>
+            <p class="styled-text">Poll system sensors</p>
+            <button id="btn11" onclick="handleButtonPress(11)" class="custom-button">Trigger</button>
+        </div>
+        <div class='grid-container'>
+            <p class="styled-text">Execute voltage measurement</p>
+            <button id="btn12" onclick="handleButtonPress(12)" class="custom-button">Trigger</button>
+        </div>
+        <div class='grid-container'>
+            <p class="styled-text">Execute resistive sweep</p>
+            <button id="btn13" onclick="handleButtonPress(13)" class="custom-button">Trigger</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Automations</h1>
+        <label for="points">These switches control automatic monitoring functions.</label>
+        <div class='grid-container'>
+            <p class="styled-text">[1] Automatically poll system sensors</p>
+            <button id="btn20" onclick="handleButtonPress(20)" class="custom-button">Enable</button>
+        </div>
+        <div class='grid-container'>
+            <p class="styled-text">[2] Automated voltage measurements</p>
+            <button id="btn21" onclick="handleButtonPress(21)" class="custom-button">Enable</button>      
+        </div>
+        <div class='grid-container'>
+            <p class="styled-text">[3] Automated resistive sweeps</p>
+            <button id="btn22" onclick="handleButtonPress(22)" class="custom-button">Enable</button>      
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Timer settings</h1>
+        <form id="autoMeasurementForm">
+
+            <div class="form-group">
+                <label for="timestamp">[1] Interval Between Measurements: (HH-MM-SS)</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="number" id="sys_interval_hour" placeholder="Hours" min="0" max="23" required style="flex:1", required value="{{ config.get('timer_settings').get('sys_interval_hour') if config.get('timer_settings').get('sys_interval_hour') is not none else '' }}">
+                    <input type="number" id="sys_interval_minute" placeholder="Minutes" min="0" max="59" required style="flex:1", required value="{{ config.get('timer_settings').get('sys_interval_minute') if config.get('timer_settings').get('sys_interval_minute') is not none else '' }}">
+                    <input type="number" id="sys_interval_second" placeholder="Seconds" min="0" max="59" required style="flex:1", required value="{{ config.get('timer_settings').get('sys_interval_second') if config.get('timer_settings').get('sys_interval_second') is not none else '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="timestamp">[2] Interval Between Measurements: (HH-MM-SS)</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="number" id="volt_interval_hour" placeholder="Hours" min="0" max="23" required style="flex:1", required value="{{ config.get('timer_settings').get('volt_interval_hour') if config.get('timer_settings').get('volt_interval_hour') is not none else '' }}">
+                    <input type="number" id="volt_interval_minute" placeholder="Minutes" min="0" max="59" required style="flex:1", required value="{{ config.get('timer_settings').get('volt_interval_minute') if config.get('timer_settings').get('volt_interval_minute') is not none else '' }}">
+                    <input type="number" id="volt_interval_second" placeholder="Seconds" min="0" max="59" required style="flex:1", required value="{{ config.get('timer_settings').get('volt_interval_second') if config.get('timer_settings').get('volt_interval_second') is not none else '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="timestamp">[3] Interval Between Measurements: (HH-MM-SS)</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="number" id="load_interval_hour" placeholder="Hours" min="0" max="23" required style="flex:1", required value="{{ config.get('timer_settings').get('load_interval_hour') if config.get('timer_settings').get('load_interval_hour') is not none else '' }}">
+                    <input type="number" id="load_interval_minute" placeholder="Minutes" min="0" max="59" required style="flex:1", required value="{{ config.get('timer_settings').get('load_interval_minute') if config.get('timer_settings').get('load_interval_minute') is not none else '' }}">
+                    <input type="number" id="load_interval_second" placeholder="Seconds" min="0" max="59" required style="flex:1", required value="{{ config.get('timer_settings').get('load_interval_second') if config.get('timer_settings').get('load_interval_second') is not none else '' }}">
+                </div>
+            </div>
+
+            <button type="button" onclick="submitFullConfig('timer_settings')">Submit</button>    
+        </form>
+    </div>
+
+    <div class="container">
+        <h1>Timers</h1>
+        <form>
+            <div class='grid-container'>
+                <p class="styled-text">Next voltage measurement in:</p>
+                <div id="timerBox"><span id="sys_countdown">--h --m --s</span></div>
+            </div>
+            <div class='grid-container'>
+                <p class="styled-text">Next system polling in:</p>
+                <div id="timerBox"><span id="volt_countdown">--h --m --s</span></div>
+            </div>
+            <div class='grid-container'>
+                <p class="styled-text">Next resistive sweep in:</p>
+                <div id="timerBox"><span id="load_countdown">--h --m --s</span></div>
+            </div>
+        </form>
+    </div>
+
+    <footer class="text-muted">
+        <div class="footer_container">
+            <p>Dramco is part of KU Leuven. For more information, go to our main website: <a href="https://dramco.be" target="_blank">dramco.be</a>.</p>
+        </div>
+    </footer>
+
+    <script>
+
+        const host = ".dramcoserver.be/";
+        document.getElementById("influx").href = "http://influxdb" + host;
+        document.getElementById("grafana").href = "http://grafana" + host;
+
+        let btnStat11 = (parseInt("{{ config.get('activity', {}).get('system', 0) }}", 10) !== 0);
+        let btnStat12 = (parseInt("{{ config.get('activity', {}).get('voltage', 0) }}", 10) !== 0);
+        let btnStat13 = (parseInt("{{ config.get('activity', {}).get('load', 0) }}", 10) !== 0);
+
+        // Functions
+        let btnStat20 = (parseInt("{{ config.get('automations', {}).get('auto_sys_poll', 0) }}", 10) !== 0);
+        let btnStat21 = (parseInt("{{ config.get('automations', {}).get('auto_volt_poll', 0) }}", 10) !== 0);
+        let btnStat22 = (parseInt("{{ config.get('automations', {}).get('auto_load_poll', 0) }}", 10) !== 0);
+        
+        // let currentMode = "calibration";
+        let currentMode = "{{ config.get('measurement_mode', {}).get('device_mode', 'individual') }}";
+        console.log("Current device mode:", currentMode);
+
+        // Ophalen van configuratie bij pagina-load
+        window.onload = function () {
+            updateDeviceModeContainerLayout();
+            foo();
+            // updateButtonLayout(autoButtonStatus);
+            // updateButtonLayout(1, startStopBtn);
+            // updateButtonLayout(2, pwrStatVNA);
+            // updateButtonLayout(3, pwrStatPA);
+            // updateButtonLayout(4, pwrStatLNA);
+            // updateButtonLayout(5, pwrStatHeater);
+            updateButtonLayout(11, btnStat11);
+            updateButtonLayout(12, btnStat12);
+            updateButtonLayout(20, btnStat20);
+            updateButtonLayout(21, btnStat21);
+            updateButtonLayout(22, btnStat22);
+        };
+
+        function foo() {
+
+            //  Get last status
+            getCountdownVars();
+
+            //  Update button status
+            getTriggerStatus();
+            
+            //  Check every 1 seconds
+            setTimeout(foo, 1000);
+        }
+
+        function getTriggerStatus() {
+            fetch('/get_trigger_status')
+                .then(response => response.json())
+                .then(data => {
+                    // updateButtonLayout(2, data.vna);
+                    // updateButtonLayout(3, data.pa);
+                    // updateButtonLayout(4, data.lna);
+                    // updateButtonLayout(5, data.heater);
+                    updateButtonLayout(11, data.system);
+                    updateButtonLayout(12, data.voltage);
+                    updateButtonLayout(13, data.load);
+                })
+                .catch(error => {
+                    console.error('Error fetching trigger status:', error);
+                });
+        }
+
+        // Send device mode --> this can be written more efficiently together with auto_measurement 
+        function sendMode() {
+            const data = {
+                measurement_mode: {
+                    device_mode: currentMode
+                }
+            };
+            fetch('/save_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+            })
+            .catch(error => {
+                alert("Error saving config: " + error);
+            });
+        }
+
+        function sendData(data){
+           fetch('/save_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+            })
+            .catch(error => {
+                alert("Error saving config: " + error);
+            });
+        }
+
+
+        function handleButtonPress(button_nr) {
+
+            switch (button_nr) {
+                // case 2:
+                //     pwrStatVNA = !pwrStatVNA;
+                //     update = pwrStatVNA;
+                //     updatePwrStat(1, update ? 1 : 0);
+                //     break;
+                // case 3:
+                //     pwrStatPA = !pwrStatPA;
+                //     update = pwrStatPA;
+                //     updatePwrStat(2, update ? 1 : 0);
+                //     break;
+                // case 4:
+                //     pwrStatLNA = !pwrStatLNA;
+                //     update = pwrStatLNA;
+                //     updatePwrStat(3, update ? 1 : 0);
+                //     break;
+                // case 5:
+                //     pwrStatHeater = !pwrStatHeater;
+                //     update = pwrStatHeater;
+                //     updatePwrStat(4, update ? 1 : 0);
+                //     break;
+                case 11:
+                    // if(btnStat20){
+                    //     alert("⚠️ Single measurement not allowed. Automatic measurements are in progress at the moment.");
+                    //     return;
+                    // }
+                    update = 1
+                    data = {    activity: {    system: 1   }   };
+                    sendData(data);
+                    break;
+                case 12:
+                    update = 1
+                    data = {    activity: {    voltage: 1   }   };
+                    sendData(data);
+                    break;
+                case 13:
+                    update = 1
+                    data = {    activity: {    load: 1      }   };
+                    sendData(data);
+                    break;
+                case 20:
+                    btnStat20 = !btnStat20;
+                    update = btnStat20;
+                    updatePwrStat(20, update ? 1 : 0);
+                    break;
+                case 21:
+                    btnStat21 = !btnStat21;
+                    update = btnStat21;
+                    updatePwrStat(21, update ? 1 : 0);
+                    break;
+                case 22:
+                    btnStat22 = !btnStat22;
+                    update = btnStat22;
+                    updatePwrStat(22, update ? 1 : 0);
+                    break;
+                default:
+                    console.warn("Unknown button number:", button_nr);
+                    return;
+            }
+
+            // Update button layout
+            updateButtonLayout(button_nr, update)
+
+        }
+
+        //  UPDATE FUNCTIONS --> Update auto button format
+        function updateButtonLayout(button_nr, update){
+            let btn_style = false
+            switch (button_nr) {
+                case 1: btn = document.getElementById("startStopBtn");  break;
+                case 2: btn = document.getElementById("pwrVNA"); break;
+                case 3: btn = document.getElementById("pwrPA"); break;
+                case 4: btn = document.getElementById("pwrLNA"); break;
+                case 5: btn = document.getElementById("pwrHeater"); break;
+                case 11: btn = document.getElementById("btn11"); btn_style = true; break;
+                case 12: btn = document.getElementById("btn12"); btn_style = true; break;
+                case 13: btn = document.getElementById("btn13"); btn_style = true; break;
+                case 20: btn = document.getElementById("btn20"); break;
+                case 21: btn = document.getElementById("btn21"); break;
+                case 22: btn = document.getElementById("btn22"); break;
+                default:    console.warn("Unknown button number:", button_nr); return;
+            }
+
+            if (!btn) {
+                console.error("Button not found for button number:", button_nr);
+                return;
+            }
+
+            if(!btn_style){
+                if (update) {
+                    btn.textContent = "Disable";
+                    btn.style.backgroundColor = "red";
+                } else {
+                    btn.textContent = "Enable";
+                    btn.style.backgroundColor = "green";
+                }
+            } else {
+                if (update) {
+                    btn.textContent = "Triggered";
+                    btn.style.backgroundColor = "red";
+                } else {
+                    btn.textContent = "Trigger";
+                    btn.style.backgroundColor = "#3a5675";
+                }
+            }
+        }
+
+
+        function updatePwrStat(relay_nr, value) {
+            let data;
+            switch (relay_nr) {
+                // case 1:
+                //     data = {    gpio_status: {    vna: parseInt(value)   }   };
+                //     break;
+                // case 2:
+                //     data = {    gpio_status: {    pa: parseInt(value)   }   };
+                //     break;
+                // case 3:
+                //     data = {    gpio_status: {    lna: parseInt(value)   }   };
+                //     break;
+                // case 4:
+                //     data = {    gpio_status: {    heater: parseInt(value)   }   };
+                //     break;
+                case 20:
+                    data = {    automations: {    auto_sys_poll: parseInt(value), update: 1   }   };
+                    break;
+                case 21:
+                    data = {    automations: {    auto_volt_poll: parseInt(value), update: 1   }   };
+                    break;
+                case 22:
+                    data = {    automations: {    auto_load_poll: parseInt(value), update: 1   }   };
+                    break;
+                case 23:
+            }
+            sendData(data);
+        }
+
+        //  UPDATE FUNCTIONS --> Function to customize header styles based on activity
+        function updateHeader(update) {
+            const header = document.querySelector('.header');
+
+            // Check the activity status
+            if (update === 1) {
+                // If activity is 1, change the header style
+                header.style.borderBottom = "3px solid #FF5733";
+                header.style.backgroundColor = "#946161";
+            } else {
+                // If activity is not 1, change the header style
+                header.style.borderBottom = "3px solid #9e9e9e";
+                header.style.backgroundColor = "#323E4C";
+            }
+        }
+
+        //  UPDATE FUNCTIONS --> Update countdown timer
+        function updateCountdown(data) {
+
+            // console.log("Countdown data:", data);
+
+            const rdate = document.getElementById("rpi_date");
+            const rpt = document.getElementById("rpi_time");
+            const scd = document.getElementById("sys_countdown");
+            const vcd = document.getElementById("volt_countdown");
+            const lcd = document.getElementById("load_countdown");
+            // const timerBox = document.getElementById("timerBox");
+
+            // if (data.vna_ch !== undefined && data.vna_cm !== undefined && data.vna_cs !== undefined) {
+            //     // Toon de timerbox als gegevens beschikbaar zijn
+            //     timerBox.style.display = "inline-block";
+
+            const rday = String(data.rpi_day).padStart(2, '0');
+            const rmon = String(data.rpi_mon).padStart(2, '0');
+            const ryea = String(data.rpi_yea).padStart(2, '0');
+            const rh = String(data.rpi_h).padStart(2, '0');
+            const rm = String(data.rpi_m).padStart(2, '0');
+            const rs = String(data.rpi_s).padStart(2, '0');
+            const sh = String(data.sys_ch).padStart(2, '0');
+            const sm = String(data.sys_cm).padStart(2, '0');
+            const ss = String(data.sys_cs).padStart(2, '0');
+            const vh = String(data.volt_ch).padStart(2, '0');
+            const vm = String(data.volt_cm).padStart(2, '0');
+            const vs = String(data.volt_cs).padStart(2, '0');
+            const lh = String(data.load_ch).padStart(2, '0');
+            const lm = String(data.load_cm).padStart(2, '0');
+            const ls = String(data.load_cs).padStart(2, '0');
+
+            rdate.textContent = `${rday}/${rmon}/${ryea}`;
+            rpt.textContent = `${rh}h ${rm}m ${rs}s`;
+            scd.textContent = `${sh}h ${sm}m ${ss}s`;
+            vcd.textContent = `${vh}h ${vm}m ${vs}s`;
+            lcd.textContent = `${lh}h ${lm}m ${ls}s`;
+
+            // console.log(rdate, rpt, scd, vcd, lcd, timerBox);
+
+            // } else {
+            //     timerBox.style.display = "none";  // Verberg als data ontbreekt
+            // }
+        }
+
+        function getCountdownVars(){
+            fetch('/get_countdown_vars')
+                .then(response => response.json())  // Parse de JSON-data
+                .then(data => {
+                    let activity = data.vna_activity;
+                    // updateHeader(activity);
+                    updateCountdown(data);
+
+                    // if(singleButtonStatus && !activity){
+                    //     updateSingleButton(0);
+                    // }
+                })
+                .catch(error => {
+                    console.error('Error fetching activity:', error);
+                });
+        }
+
+
+        function submitFullConfig(value) {
+            
+            if(value === 'timer_settings'){
+                data = {
+                    timer_settings: {
+                        //  System measurement interval
+                        sys_interval_hour: parseInt(document.getElementById("sys_interval_hour").value),
+                        sys_interval_minute: parseInt(document.getElementById("sys_interval_minute").value),
+                        sys_interval_second: parseInt(document.getElementById("sys_interval_second").value),
+
+                        //  Voltage sweep measurement interval
+                        volt_interval_hour: parseInt(document.getElementById("volt_interval_hour").value),
+                        volt_interval_minute: parseInt(document.getElementById("volt_interval_minute").value),
+                        volt_interval_second: parseInt(document.getElementById("volt_interval_second").value),
+
+                        //  Load measurement interval
+                        load_interval_hour: parseInt(document.getElementById("load_interval_hour").value),
+                        load_interval_minute: parseInt(document.getElementById("load_interval_minute").value),
+                        load_interval_second: parseInt(document.getElementById("load_interval_second").value),
+
+                        update: 1
+                    }
+                };
+            }
+ 
+            if (data) {
+                fetch('/save_config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    const outputDiv = document.getElementById("output");
+                    outputDiv.innerHTML = `<strong>${result.status}:</strong> ${result.message}`;
+                    outputDiv.style.display = "block";
+
+                    setTimeout(() => {
+                    outputDiv.style.display = "none";
+                    }, 5000); // Verdwijn na 5 seconden
+                })
+                .catch(error => {
+                    alert("Error saving config: " + error);
+                });
+            } else {
+                alert("No data prepared to send.");
+            }
+        }
+
+        // Toggle device mode
+        function toggleDeviceMode() {
+            if (currentMode === "individual") {
+                currentMode = "series";
+                updateDeviceModeContainerLayout();
+            } else {
+                currentMode = "individual";
+                updateDeviceModeContainerLayout();
+            }
+
+            sendMode();
+        }
+
+        // Update layout device mode container
+        function updateDeviceModeContainerLayout() {
+            const container = document.getElementById("modeContainer");
+            const title = document.getElementById("modeTitle");
+            const button = document.getElementById("deviceModeButton");
+
+            if (currentMode === "individual") {
+                title.textContent = "Individual Mode";
+                button.textContent = "Switch to Series Mode";
+                container.classList.remove("series-mode");
+                container.classList.add("individual-mode");
+            }
+
+            if (currentMode === "series") {
+                title.textContent = "Series Mode";
+                button.textContent = "Switch to Individual Mode";
+                container.classList.remove("individual-mode");
+                container.classList.add("series-mode");
+            }
+
+        }
+        
+    </script>
+</body>
+</html>
