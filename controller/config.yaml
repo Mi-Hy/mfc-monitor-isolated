@@ -1,7 +1,7 @@
 activity:
-  load: 1
-  system: 1
-  voltage: 1
+  load: 0
+  system: 0
+  voltage: 0
 automations:
   auto_load_poll: 0
   auto_sys_poll: 0

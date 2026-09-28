@@ -12,7 +12,7 @@ home_dir = os.path.abspath(
 )
 print(home_dir)
 
-CONFIG_PATH = home_dir + "/config.yaml"
+CONFIG_PATH = home_dir + "/mfc_monitor_isolated/controller/config.yaml"
 LOCK_PATH = CONFIG_PATH + ".lock"
 
 def retrieve_yaml_file():
