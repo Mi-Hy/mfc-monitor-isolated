@@ -11,8 +11,6 @@ from lib.configuration import *
 import RPi.GPIO as GPIO
 
 
-io = DenkoviRelay()
-
 CELLS = 8
 
 # INA219 I2C addresses
@@ -27,10 +25,6 @@ INA219_ADDRESSES = [
     0x47
 ]
 
-BUFFER_RELAY_PIN = 19  # GPIO19 = fysieke pin 35
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUFFER_RELAY_PIN, GPIO.OUT, initial=GPIO.LOW)
 
 
 # -------------------------------------------------------------------------
@@ -83,104 +77,78 @@ if __name__ == "__main__":
 
     voltage_buffer = []
 
-    try:
 
-        for i in range(CELLS):
+    for i in range(CELLS):
 
-            # -------------------------------------------------------------
-            # Buffer relay ON
-            # -------------------------------------------------------------
 
-            GPIO.output(BUFFER_RELAY_PIN, GPIO.HIGH)
+        # -------------------------------------------------------------
+        # Select cell using Denkovi relay
+        # -------------------------------------------------------------
 
-            time.sleep(0.5)
+        time.sleep(0.1)
 
-            # -------------------------------------------------------------
-            # Select cell using Denkovi relay
-            # -------------------------------------------------------------
+        # -------------------------------------------------------------
+        # Read corresponding INA219
+        #
+        # Cell 1 -> 0x40
+        # Cell 2 -> 0x41
+        # ...
+        # Cell 8 -> 0x47
+        # -------------------------------------------------------------
 
-            io.relay_on(i + 1)
+        ina219 = ina219_devices[i]
 
-            time.sleep(0.1)
+        buffer_voltages = []
 
-            # -------------------------------------------------------------
-            # Read corresponding INA219
-            #
-            # Cell 1 -> 0x40
-            # Cell 2 -> 0x41
-            # ...
-            # Cell 8 -> 0x47
-            # -------------------------------------------------------------
+        for _ in range(5):
 
-            ina219 = ina219_devices[i]
+            try:
 
-            buffer_voltages = []
+                voltage = ina219.bus_voltage
 
-            for _ in range(5):
+                # Convert V -> mV
+                voltage_mv = voltage * 1000
 
-                try:
+                buffer_voltages.append(voltage_mv)
 
-                    voltage = ina219.bus_voltage
-
-                    # Convert V -> mV
-                    voltage_mv = voltage * 1000
-
-                    buffer_voltages.append(voltage_mv)
-
-                except Exception as e:
-
-                    print(
-                        f"[Cell {i + 1}] "
-                        f"INA219 read error: {e}"
-                    )
-
-                time.sleep(0.05)
-
-            # -------------------------------------------------------------
-            # Median of the 5 measurements
-            # -------------------------------------------------------------
-
-            if buffer_voltages:
-
-                buffer_voltage_median = median(buffer_voltages)
+            except Exception as e:
 
                 print(
                     f"[Cell {i + 1}] "
-                    f"INA219 0x{INA219_ADDRESSES[i]:02X} "
-                    f"Buffer Voltage: "
-                    f"{buffer_voltage_median:.1f} mV"
+                    f"INA219 read error: {e}"
                 )
 
-                voltage_buffer.append(
-                    int(round(buffer_voltage_median))
-                )
+            time.sleep(0.05)
 
-            else:
+        # -------------------------------------------------------------
+        # Median of the 5 measurements
+        # -------------------------------------------------------------
 
-                print(
-                    f"[Cell {i + 1}] "
-                    f"Could not read INA219"
-                )
+        if buffer_voltages:
 
-                voltage_buffer.append(0)
+            buffer_voltage_median = median(buffer_voltages)
 
-            # -------------------------------------------------------------
-            # Relay OFF
-            # -------------------------------------------------------------
+            print(
+                f"[Cell {i + 1}] "
+                f"INA219 0x{INA219_ADDRESSES[i]:02X} "
+                f"Buffer Voltage: "
+                f"{buffer_voltage_median:.1f} mV"
+            )
 
-            time.sleep(0.1)
+            voltage_buffer.append(
+                int(round(buffer_voltage_median))
+            )
 
-            io.relay_off(i + 1)
+        else:
 
-            time.sleep(0.1)
+            print(
+                f"[Cell {i + 1}] "
+                f"Could not read INA219"
+            )
 
-            GPIO.output(BUFFER_RELAY_PIN, GPIO.LOW)
+            voltage_buffer.append(0)
 
-            time.sleep(1)
 
-    finally:
-
-        GPIO.cleanup()
 
 
 # -------------------------------------------------------------------------
