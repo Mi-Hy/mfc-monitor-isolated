@@ -126,6 +126,39 @@ def send_system_info(config, debug_name, temperature_data, system_data):
     client.close()
 
 
+def send_power_sensors_info(config, debug_name, voltage_data, current_data):
+
+    client = InfluxDBClient(url=config['influxdb']['url'], token=config['influxdb']['token'], org=config['influxdb']['org'])
+
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+
+    # Timestamp
+    ts = datetime.now()
+
+    points = []
+
+    for cell, voltage in voltage_data.items():
+        point = (
+            Point("voltage_data")
+            .time(ts)
+            .tag("device", config['fixed_configurations']['device_name'])
+            .tag("cell", cell)
+            .field("voltage", voltage)
+            .field("current", current_data.get(cell, 0))
+        )
+        points.append(point)
+
+
+    # Write data in batch
+    try:
+        write_api.write(bucket=config['influxdb']['bucket'], org=config['influxdb']['org'], record=points)
+        debug(debug_name, f"✓ System data sended.")
+    except Exception as e:
+        debug(debug_name, f"[Warning] Could not write to InfluxDB: {e}")
+        client.close()
+        return False
+
+    client.close()
 
 
 def send_voltage_info(config, debug_name, voltage_data):

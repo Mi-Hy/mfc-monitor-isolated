@@ -295,7 +295,7 @@ print(current_data)
 
 if voltage_data:
 
-    send_voltage_info(
+    send_power_sensors_info(
         config,
         "[Voltage]",
         voltage_data
