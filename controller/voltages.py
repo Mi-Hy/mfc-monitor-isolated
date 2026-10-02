@@ -297,8 +297,9 @@ if voltage_data:
 
     send_power_sensors_info(
         config,
-        "[Voltage]",
-        voltage_data
+        "[Power Sensors]",
+        voltage_data,
+        current_data
     )
 
 
