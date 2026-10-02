@@ -1028,7 +1028,7 @@
                     <div class="action-note">A sweep can take longer than the other tasks. Keep the hardware connected until it finishes.</div>
                     <button id="btn13" class="primary-button" type="button">Start sweep now</button>
                 </article>
-                
+
                 <article class="action-card under-construction">
                     <div>
                         <div class="panel-heading">
@@ -1301,7 +1301,6 @@
                 const button = byId(meta.button);
                 const status = byId(meta.status);
 
-                console.log("manual button:", button);
                 button.disabled = active;
                 button.classList.toggle("is-queued", active);
                 button.textContent = active ? "Queued / running…" : meta.idle;
