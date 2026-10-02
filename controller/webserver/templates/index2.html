@@ -1300,6 +1300,7 @@
                 const button = byId(meta.button);
                 const status = byId(meta.status);
 
+                console.log("manual button:", button);
                 button.disabled = active;
                 button.classList.toggle("is-queued", active);
                 button.textContent = active ? "Queued / running…" : meta.idle;
