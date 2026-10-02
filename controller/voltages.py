@@ -202,6 +202,8 @@ except IndexError as e:
 # Send voltage information
 # -------------------------------------------------------------------------
 
+print(voltage_data)
+
 if voltage_data:
 
     send_voltage_info(

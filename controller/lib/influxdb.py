@@ -137,17 +137,6 @@ def send_voltage_info(config, debug_name, voltage_data):
     # Timestamp
     ts = datetime.now()
 
-    # Create point
-    # point = (
-    #     Point("voltage_data")
-    #     .time(ts)
-    #     .tag("device", config['fixed_configurations']['device_name'])
-    #     .field("cell_0", voltage_data["cell_0"])
-    #     .field("cell_1", voltage_data["cell_1"])
-    #     .field("cell_2", voltage_data["cell_2"])
-    #     .field("cell_3", voltage_data["cell_3"])
-    # )
-
     points = []
 
     for cell, voltage in voltage_data.items():
