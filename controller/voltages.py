@@ -76,6 +76,7 @@ if __name__ == "__main__":
     update_yaml_flag("activity", "voltage", 1)
 
     voltage_buffer = []
+    current_buffer = []
 
 
     for i in range(CELLS):
@@ -99,20 +100,21 @@ if __name__ == "__main__":
         ina219 = ina219_devices[i]
 
         buffer_voltages = []
+        buffer_currents = []
 
         for _ in range(5):
 
             try:
-
+                # Voltage
                 voltage = ina219.bus_voltage
-
-                # Convert V -> mV
                 voltage_mv = voltage * 1000
-
                 buffer_voltages.append(voltage_mv)
 
-            except Exception as e:
+                # Current
+                current = ina219.current
+                buffer_currents.append(current)
 
+            except Exception as e:
                 print(
                     f"[Cell {i + 1}] "
                     f"INA219 read error: {e}"
@@ -121,7 +123,7 @@ if __name__ == "__main__":
             time.sleep(0.05)
 
         # -------------------------------------------------------------
-        # Median of the 5 measurements
+        # Median of the 5 voltage measurements
         # -------------------------------------------------------------
 
         if buffer_voltages:
@@ -143,10 +145,89 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"Could not read INA219"
+                f"Could not read INA219 voltage"
             )
 
             voltage_buffer.append(0)
+
+
+        # -------------------------------------------------------------
+        # Median of the 5 current measurements
+        # -------------------------------------------------------------
+
+        if buffer_currents:
+
+            buffer_current_median = median(buffer_currents)
+
+            print(
+                f"[Cell {i + 1}] "
+                f"INA219 0x{INA219_ADDRESSES[i]:02X} "
+                f"Buffer Current: "
+                f"{buffer_current_median:.2f} mA"
+            )
+
+            current_buffer.append(
+                round(buffer_current_median, 2)
+            )
+
+        else:
+
+            print(
+                f"[Cell {i + 1}] "
+                f"Could not read INA219 current"
+            )
+
+            current_buffer.append(0)
+
+        # buffer_voltages = []
+
+        # for _ in range(5):
+
+        #     try:
+
+        #         voltage = ina219.bus_voltage
+
+        #         # Convert V -> mV
+        #         voltage_mv = voltage * 1000
+
+        #         buffer_voltages.append(voltage_mv)
+
+        #     except Exception as e:
+
+        #         print(
+        #             f"[Cell {i + 1}] "
+        #             f"INA219 read error: {e}"
+        #         )
+
+        #     time.sleep(0.05)
+
+        # # -------------------------------------------------------------
+        # # Median of the 5 measurements
+        # # -------------------------------------------------------------
+
+        # if buffer_voltages:
+
+        #     buffer_voltage_median = median(buffer_voltages)
+
+        #     print(
+        #         f"[Cell {i + 1}] "
+        #         f"INA219 0x{INA219_ADDRESSES[i]:02X} "
+        #         f"Buffer Voltage: "
+        #         f"{buffer_voltage_median:.1f} mV"
+        #     )
+
+        #     voltage_buffer.append(
+        #         int(round(buffer_voltage_median))
+        #     )
+
+        # else:
+
+        #     print(
+        #         f"[Cell {i + 1}] "
+        #         f"Could not read INA219"
+        #     )
+
+        #     voltage_buffer.append(0)
 
 
 
@@ -170,32 +251,39 @@ print("length:", len(voltage_buffer))
 
 try:
 
-    if device_mode == "series":
+    # if device_mode == "series":
 
-        voltage_data = {}
+    #     voltage_data = {}
+    #     current_data = {}
 
-        previous = 0
+    #     previous = 0
 
-        for i in range(CELLS):
+    #     for i in range(CELLS):
 
-            voltage_data[f"cell_{i}"] = (
-                voltage_buffer[i] - previous
-            )
+    #         voltage_data[f"cell_{i}"] = (
+    #             voltage_buffer[i] - previous
+    #         )
 
-            previous = voltage_buffer[i]
+    #         previous = voltage_buffer[i]
 
-    else:
+    # else:
 
-        voltage_data = {
-            f"cell_{i}": voltage_buffer[i]
-            for i in range(CELLS)
-        }
+    voltage_data = {
+        f"cell_{i}": voltage_buffer[i]
+        for i in range(CELLS)
+    }
+
+    current_data = {
+        f"cell_{i}": current_buffer[i]
+        for i in range(CELLS)
+    }
 
 except IndexError as e:
 
     print(f"Voltage buffer index error: {e}")
 
     voltage_data = {}
+    current_data = {}
 
 
 # -------------------------------------------------------------------------
@@ -203,6 +291,7 @@ except IndexError as e:
 # -------------------------------------------------------------------------
 
 print(voltage_data)
+print(current_data)
 
 if voltage_data:
 
