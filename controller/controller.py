@@ -17,7 +17,7 @@ socket_server_started = False
 
 # Config
 system_script_path = "system.py"
-voltage_script_path = "voltages.py"
+voltage_script_path = "cell_measurements.py"
 load_script_path = "load.py"
 
 # Initial start time

@@ -290,8 +290,8 @@ except IndexError as e:
 # Send voltage information
 # -------------------------------------------------------------------------
 
-print(voltage_data)
-print(current_data)
+# print(voltage_data)
+# print(current_data)
 
 if voltage_data:
 
