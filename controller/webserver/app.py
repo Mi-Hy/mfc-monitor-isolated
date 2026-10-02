@@ -72,7 +72,7 @@ def index():
     config = retrieve_yaml_file()
     print(config)
 
-    return render_template('index2.html', config=config)
+    return render_template('index.html', config=config)
 
 @app.route('/save_config', methods=['POST'])
 @requires_auth
