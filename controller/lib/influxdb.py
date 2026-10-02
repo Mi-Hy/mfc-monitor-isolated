@@ -139,7 +139,7 @@ def send_power_sensors_info(config, debug_name, voltage_data, current_data):
 
     for cell, voltage in voltage_data.items():
         point = (
-            Point("voltage_data")
+            Point("cell_measurements")
             .time(ts)
             .tag("device", config['fixed_configurations']['device_name'])
             .tag("cell", cell)
