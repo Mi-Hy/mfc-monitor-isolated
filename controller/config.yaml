@@ -4,8 +4,8 @@ activity:
   voltage: 0
 automations:
   auto_load_poll: 0
-  auto_sys_poll: 0
-  auto_volt_poll: 0
+  auto_sys_poll: 1
+  auto_volt_poll: 1
   update: 0
 fixed_configurations:
   device_name: MFC02
@@ -23,9 +23,9 @@ timer_settings:
   load_interval_minute: 10
   load_interval_second: 0
   sys_interval_hour: 0
-  sys_interval_minute: 10
+  sys_interval_minute: 15
   sys_interval_second: 0
   update: 0
   volt_interval_hour: 0
-  volt_interval_minute: 55
+  volt_interval_minute: 5
   volt_interval_second: 0
