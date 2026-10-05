@@ -29,3 +29,7 @@ timer_settings:
   volt_interval_hour: 0
   volt_interval_minute: 5
   volt_interval_second: 0
+trigger:
+  load: 0
+  system: 0
+  voltage: 0

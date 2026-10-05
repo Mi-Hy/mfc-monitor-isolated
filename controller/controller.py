@@ -204,32 +204,32 @@ def main_loop():
 
 
         # Trigger measurement script
-        if config.get("activity", {}).get("system", 0) == 1:
+        if config.get("trigger", {}).get("system", 0) == 1:
             print("Single system measurement")
 
             # Execute the script directly without waiting for the scheduler timer
             system_scheduler.start_script()          
 
             # Clear single measurement trigger flag
-            update_yaml_flag("activity", "system", 0)
+            update_yaml_flag("trigger", "system", 0)
 
-        if config.get("activity", {}).get("voltage", 0) == 1:
+        if config.get("trigger", {}).get("voltage", 0) == 1:
             print("Single voltage measurement")
 
             # Execute the script directly without waiting for the scheduler timer
             voltage_scheduler.start_script()          
 
             # Clear single measurement trigger flag
-            update_yaml_flag("activity", "voltage", 0)
+            update_yaml_flag("trigger", "voltage", 0)
 
-        if config.get("activity", {}).get("load", 0) == 1:
+        if config.get("trigger", {}).get("load", 0) == 1:
             print("Single load measurement")
 
             # Execute the script directly without waiting for the scheduler timer
             load_scheduler.start_script()          
 
             # Clear single measurement trigger flag
-            update_yaml_flag("activity", "load", 0)
+            update_yaml_flag("trigger", "load", 0)
 
 
         if config.get("automations", {}).get("update", 0) == 1:

@@ -1304,7 +1304,7 @@
                 renderManualButton(number, true);
 
                 try {
-                    await saveConfig({ activity: { [meta.key]: 1 } });
+                    await saveConfig({ trigger: { [meta.key]: 1 } });
                     showToast("Measurement queued on the controller.");
                 } catch (error) {
                     initialState.manual[number] = false;
