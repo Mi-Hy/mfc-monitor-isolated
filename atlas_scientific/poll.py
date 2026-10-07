@@ -68,8 +68,8 @@ def read_all_once():
 
     # 3. Lees de resultaten uit en print ze
     for dev in devices:
-        print(f"[{dev.name} - Adres {dev.address}]: {dev.read()}")
         raw_output = dev.read()
+        print(f"[{dev.name} - Adres {dev.address}]: {raw_output}")
         sensor_type, val = parse_sensor_data(raw_output)
 
         if sensor_type is not None:
