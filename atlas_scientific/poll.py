@@ -36,7 +36,7 @@ def parse_sensor_data(read_output):
 
         # Splits op de dubbele punt ':' -> ['pH 99', '7.889']
         sensor_info, value_str = clean_str.split(":")
-        print(sensor_type, value_str)
+        print(sensor_info, value_str)
 
         # Pak de sensornaam (eerste woord vóór het adres)
         sensor_type = sensor_info.strip().split()[0]
