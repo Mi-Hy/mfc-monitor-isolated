@@ -25,27 +25,41 @@ def get_devices():
 
     return device_list
 
+# def parse_sensor_data(read_output):
+#     """Parseert de ruwe dev.read() output naar een (type, waarde) tuple.
+
+#     Voorbeeld: 'Success pH 99 : 7.889' -> ('pH', 7.889)
+#     """
+#     try:
+#         # Verwijder 'Success ' aan het begin indien aanwezig
+#         clean_str = read_output.replace("Success ", "").strip()
+
+#         # Splits op de dubbele punt ':' -> ['pH 99', '7.889']
+#         sensor_info, value_str = clean_str.split(":")
+#         print(sensor_info, value_str)
+
+#         # Pak de sensornaam (eerste woord vóór het adres)
+#         sensor_type = sensor_info.strip().split()[0]
+#         value = float(value_str.strip())
+
+#         return sensor_type, value
+#     except (ValueError, IndexError):
+#         # Als de uitlezing mislukt (bijv. foutmelding of no-data)
+#         return None, None
+
 def parse_sensor_data(read_output):
-    """Parseert de ruwe dev.read() output naar een (type, waarde) tuple.
+    """Filtert het sensortype en de waarde eruit, ongeacht de exacte opmaak."""
+    # Zoekt naar bekende sensornamen (DO, pH, EC, RTD) en het laatste getal/float
+    match = re.search(
+        r"(DO|pH|EC|RTD)\b.*?\b(-?\d+(?:\.\d+)?)", read_output, re.IGNORECASE
+    )
 
-    Voorbeeld: 'Success pH 99 : 7.889' -> ('pH', 7.889)
-    """
-    try:
-        # Verwijder 'Success ' aan het begin indien aanwezig
-        clean_str = read_output.replace("Success ", "").strip()
-
-        # Splits op de dubbele punt ':' -> ['pH 99', '7.889']
-        sensor_info, value_str = clean_str.split(":")
-        print(sensor_info, value_str)
-
-        # Pak de sensornaam (eerste woord vóór het adres)
-        sensor_type = sensor_info.strip().split()[0]
-        value = float(value_str.strip())
-
+    if match:
+        sensor_type = match.group(1).upper()
+        value = float(match.group(2))
         return sensor_type, value
-    except (ValueError, IndexError):
-        # Als de uitlezing mislukt (bijv. foutmelding of no-data)
-        return None, None
+
+    return None, None
 
 def read_all_once():
     """Voert één poll uit voor alle aangesloten sensoren, print het resultaat en sluit af."""
