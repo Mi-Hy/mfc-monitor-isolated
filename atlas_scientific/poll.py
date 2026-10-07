@@ -27,37 +27,34 @@ def get_devices():
     return device_list
 
 # def parse_sensor_data(read_output):
-#     """Parseert de ruwe dev.read() output naar een (type, waarde) tuple.
+#     """Filtert het sensortype en de waarde eruit, ongeacht de exacte opmaak."""
+#     # Zoekt naar bekende sensornamen (DO, pH, EC, RTD) en het laatste getal/float
+#     match = re.search(
+#         r"(DO|pH|EC|RTD)\b.*?\b(-?\d+(?:\.\d+)?)", read_output, re.IGNORECASE
+#     )
 
-#     Voorbeeld: 'Success pH 99 : 7.889' -> ('pH', 7.889)
-#     """
-#     try:
-#         # Verwijder 'Success ' aan het begin indien aanwezig
-#         clean_str = read_output.replace("Success ", "").strip()
-
-#         # Splits op de dubbele punt ':' -> ['pH 99', '7.889']
-#         sensor_info, value_str = clean_str.split(":")
-#         print(sensor_info, value_str)
-
-#         # Pak de sensornaam (eerste woord vóór het adres)
-#         sensor_type = sensor_info.strip().split()[0]
-#         value = float(value_str.strip())
-
+#     if match:
+#         sensor_type = match.group(1).upper()
+#         value = float(match.group(2))
 #         return sensor_type, value
-#     except (ValueError, IndexError):
-#         # Als de uitlezing mislukt (bijv. foutmelding of no-data)
-#         return None, None
+
+#     return None, None
 
 def parse_sensor_data(read_output):
-    """Filtert het sensortype en de waarde eruit, ongeacht de exacte opmaak."""
-    # Zoekt naar bekende sensornamen (DO, pH, EC, RTD) en het laatste getal/float
-    match = re.search(
-        r"(DO|pH|EC|RTD)\b.*?\b(-?\d+(?:\.\d+)?)", read_output, re.IGNORECASE
-    )
+    """Haalt de sensornaam en de daadwerkelijke meetwaarde uit de output,
 
-    if match:
-        sensor_type = match.group(1).upper()
-        value = float(match.group(2))
+    waarbij het adresnummer (bijv. 97, 99) altijd wordt overgeslagen.
+    """
+    # 1. Zoek de bekende sensornaam (DO, pH, EC, RTD)
+    type_match = re.search(r"\b(DO|pH|EC|RTD)\b", read_output, re.IGNORECASE)
+
+    # 2. Zoek ALLE getallen (integers en floats, inclusief negatieve getallen)
+    numbers = re.findall(r"-?\d+(?:\.\d+)?", read_output)
+
+    if type_match and numbers:
+        sensor_type = type_match.group(1).upper()
+        # De meetwaarde staat ALTIJD als laatste getal in de string
+        value = float(numbers[-1])
         return sensor_type, value
 
     return None, None
@@ -100,46 +97,3 @@ def read_all_once():
 
 if __name__ == "__main__":
     read_all_once()
-
-# def read_all_to_dict():
-#     """Lest alle sensoren uit en geeft de resultaten terug als een dictionary."""
-#     devices = get_devices()  # Veronderstelt dat get_devices() aanwezig is
-
-#     if not devices:
-#         print("Geen apparaten gevonden.")
-#         sys.exit(1)
-
-#     delay_time = max(dev.long_timeout for dev in devices)
-
-#     # 1. Start metingen
-#     for dev in devices:
-#         dev.write("R")
-
-#     time.sleep(delay_time)
-
-#     # 2. Verzamel gegevens in een dictionary
-#     sensor_data = {}
-
-#     for dev in devices:
-#         raw_output = dev.read()
-#         print(dev.read())
-#         sensor_type, val = parse_sensor_data(raw_output)
-
-#         if sensor_type is not None:
-#             sensor_data[sensor_type] = val
-
-#     return sensor_data
-
-
-# if __name__ == "__main__":
-#     results = read_all_to_dict()
-
-#     # Het resultaat is nu een schone dictionary:
-#     print("Geparseerde gegevens:", results)
-#     # Output: {'DO': 0.65, 'pH': 7.889, 'EC': 0.0, 'RTD': 26.794}
-
-#     # Je kunt nu direct specifieke waarden opvragen:
-#     if "pH" in results:
-#         print(f"Huidige pH-waarde: {results['pH']}")
-
-#     sys.exit(0)
