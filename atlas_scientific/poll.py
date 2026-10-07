@@ -71,6 +71,7 @@ def read_all_once():
         raw_output = dev.read()
         print(f"[{dev.name} - Adres {dev.address}]: {raw_output}")
         sensor_type, val = parse_sensor_data(raw_output)
+        print(sensor_type,val)
 
         if sensor_type is not None:
             sensor_data[sensor_type] = val
