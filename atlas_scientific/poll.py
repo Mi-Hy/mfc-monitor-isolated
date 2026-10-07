@@ -26,19 +26,6 @@ def get_devices():
 
     return device_list
 
-# def parse_sensor_data(read_output):
-#     """Filtert het sensortype en de waarde eruit, ongeacht de exacte opmaak."""
-#     # Zoekt naar bekende sensornamen (DO, pH, EC, RTD) en het laatste getal/float
-#     match = re.search(
-#         r"(DO|pH|EC|RTD)\b.*?\b(-?\d+(?:\.\d+)?)", read_output, re.IGNORECASE
-#     )
-
-#     if match:
-#         sensor_type = match.group(1).upper()
-#         value = float(match.group(2))
-#         return sensor_type, value
-
-#     return None, None
 
 def parse_sensor_data(read_output):
     """Haalt de sensornaam en de daadwerkelijke meetwaarde uit de output,
@@ -89,11 +76,14 @@ def read_all_once():
         if sensor_type is not None:
             sensor_data[sensor_type] = val
 
-    print(sensor_data)
+    # print(sensor_data)
+
+    return sensor_data
 
     # 4. Sluit het script af
-    sys.exit(0)
+    # sys.exit(0)
+
 
 
 if __name__ == "__main__":
-    read_all_once()
+    print(read_all_once())
