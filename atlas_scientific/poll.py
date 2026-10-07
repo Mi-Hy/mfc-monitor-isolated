@@ -96,6 +96,7 @@ def read_all_to_dict():
 
     for dev in devices:
         raw_output = dev.read()
+        print(dev.read())
         sensor_type, val = parse_sensor_data(raw_output)
 
         if sensor_type is not None:
