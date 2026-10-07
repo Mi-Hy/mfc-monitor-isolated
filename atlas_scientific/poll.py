@@ -3,6 +3,7 @@
 import sys
 import time
 from AtlasI2C import AtlasI2C
+import re
 
 
 def get_devices():
