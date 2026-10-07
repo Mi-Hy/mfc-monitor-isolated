@@ -64,9 +64,18 @@ def read_all_once():
     # 2. Wacht tot de sensoren de meting voltooid hebben
     time.sleep(delay_time)
 
+    sensor_data = {}
+
     # 3. Lees de resultaten uit en print ze
     for dev in devices:
         print(f"[{dev.name} - Adres {dev.address}]: {dev.read()}")
+        raw_output = dev.read()
+        sensor_type, val = parse_sensor_data(raw_output)
+
+        if sensor_type is not None:
+            sensor_data[sensor_type] = val
+
+    print(sensor_data)
 
     # 4. Sluit het script af
     sys.exit(0)
