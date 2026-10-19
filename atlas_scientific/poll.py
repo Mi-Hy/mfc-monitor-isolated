@@ -50,7 +50,7 @@ def read_all_once():
     """Voert één poll uit voor alle aangesloten sensoren, print het resultaat en sluit af."""
     devices = get_devices()
 
-    print(vars(devices[0]))
+    print([dev.address for dev in devices])
     
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
