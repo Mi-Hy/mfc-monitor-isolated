@@ -99,7 +99,7 @@ def read_all_once_temp_compensated():
 
     # Zoek de RTD-sensor
     # print([dev.address for dev in devices])
-    rtd_devices = [dev for dev in devices if dev.address == "102"]
+    rtd_devices = [dev.address for dev in devices]
     print(rtd_devices)
 
     rtd_index = rtd_devices.index(102) if 102 in rtd_devices else -1
