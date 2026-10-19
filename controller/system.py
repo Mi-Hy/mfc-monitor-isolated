@@ -9,6 +9,7 @@ import asyncio
 import socket
 from lib.ds18b20 import *
 # from lib.socket_helper import *
+from atlas_scientific.poll import *
 
 def get_cpu_temp():
     try:
@@ -52,9 +53,11 @@ if __name__ == "__main__":
         "temp": ds18b20[0],
     }
 
+    water_quality = read_all_once()
+
 
     print("System data:", system_data)
     print("Temperature data:", temperature_data)
 
     # Send data to influxdb server
-    send_system_info(config, "[System]", temperature_data, system_data)
+    send_system_info(config, "[System]", temperature_data, system_data, water_quality)

@@ -94,7 +94,7 @@ def debug(debug_name, string):
     print(f"{debug_name} {string}")
 
 
-def send_system_info(config, debug_name, temperature_data, system_data):
+def send_system_info(config, debug_name, temperature_data, system_data, water_quality):
 
     client = InfluxDBClient(url=config['influxdb']['url'], token=config['influxdb']['token'], org=config['influxdb']['org'])
 
@@ -112,6 +112,10 @@ def send_system_info(config, debug_name, temperature_data, system_data):
         .field("system-cpu-temp", system_data["system-cpu-temp"])
         .field("system-cpu-load", system_data["system-cpu-load"])
         .field("system-disk", system_data["system-disk"])
+        .field("DO", water_quality["DO"])
+        .field("PH", water_quality["PH"])
+        .field("EC", water_quality["EC"])
+        .field("RTD", water_quality["RTD"])
     )
     print(point)
     # Write data in batch
