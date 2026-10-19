@@ -93,14 +93,12 @@ def read_all_once_temp_compensated():
     """
     devices = get_devices()
 
-    print([dev.name for dev in devices])
-
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
         sys.exit(1)
 
     # Zoek de RTD-sensor
-    rtd_devices = [dev for dev in devices if dev.name == "RTD"]
+    rtd_devices = [dev for dev in devices if dev.address == "102"]
 
     if not rtd_devices:
         print("Geen RTD-sensor gevonden.")
