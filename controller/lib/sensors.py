@@ -230,6 +230,9 @@ def ph_cal_clear():
 
     response = ph_device.read()
     print(f"[Sensors][PH] Clear calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ph_cal_cleared_ts", int(time.time()))
+
     return response
 
 
@@ -241,6 +244,9 @@ def ph_cal_mid():
 
     response = ph_device.read()
     print(f"[Sensors][PH] Mid-point calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ph_cal_mid7_ts", int(time.time()))
+
     return response
 
 
@@ -252,6 +258,9 @@ def ph_cal_low():
 
     response = ph_device.read()
     print(f"[Sensors][PH] Low-point calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ph_cal_low4_ts", int(time.time()))
+
     return response
 
 
@@ -263,6 +272,9 @@ def ph_cal_high():
 
     response = ph_device.read()
     print(f"[Sensors][PH] High-point calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ph_cal_high10_ts", int(time.time()))
+
     return response
 
 if __name__ == "__main__":

@@ -43,4 +43,7 @@ sensor_requests:
   ph_cal_req_status: 0
 sensor_responses:
   ph_cal_rsp_status: 0
-  
+  ph_cal_low4_ts: 0
+  ph_cal_mid7_ts: 0
+  ph_cal_high10_ts: 0
+  ph_cal_cleared_ts: 0  
