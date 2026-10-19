@@ -4,6 +4,7 @@ import sys
 import time
 from lib.AtlasI2C import AtlasI2C
 import re
+from lib.configuration import *
 
 
 def get_devices():
@@ -178,7 +179,9 @@ def ph_cal():
 
     raw_output = ph.read()
 
-    print(raw_output)
+    value = raw_output.split(",")[1]
+
+    update_yaml_flag("sensor_status", "ph_calibration", value)
 
 
 if __name__ == "__main__":
