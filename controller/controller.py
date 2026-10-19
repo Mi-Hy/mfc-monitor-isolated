@@ -151,10 +151,10 @@ def check_sensor_functions(config):
         ph_cal_clear()
         update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
     if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
-        ph_cal_mid()
+        ph_cal_low()
         update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
     if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
-        ph_cal_low()
+        ph_cal_mid()
         update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
     if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
         ph_cal_high()
