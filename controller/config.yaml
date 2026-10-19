@@ -35,12 +35,12 @@ trigger:
   voltage: 0
 sensor_configurations:
   temp_compensation: 0
-sensor_functions:
-  ph_cal_clear: 0
-  ph_cal_low4: 0
-  ph_cal_mid7: 0
-  ph_cal_high10: 0
-  ph_cal_status: 0
-sensor_status:
-  ph_calibration: 0
+sensor_requests:
+  ph_cal_req_clear: 0
+  ph_cal_req_low4: 0
+  ph_cal_req_mid7: 0
+  ph_cal_req_high10: 0
+  ph_cal_req_status: 0
+sensor_responses:
+  ph_cal_rsp_status: 0
   

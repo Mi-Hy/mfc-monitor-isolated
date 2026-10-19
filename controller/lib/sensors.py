@@ -155,35 +155,77 @@ def read_all_once_temp_compensated():
     return sensor_data
 
 
-def ph_cal():
+def find_device(device_number):
     devices = get_devices()
 
     if not devices:
-        print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
+        print("No Atlas Scientific EZO I2C-devices found!")
         sys.exit(1)
 
-    # Zoek de RTD-sensor
-    rtd_devices = [dev.address for dev in devices]
-    # print(rtd_devices)
+    # Zoek de PH-sensor
+    devices_addresses = [dev.address for dev in devices]
+    device_index = devices_addresses.index(device_number) if device_number in devices_addresses else -1
 
-    rtd_index = rtd_devices.index(99) if 99 in rtd_devices else -1
-
-    if rtd_index == -1:
+    if device_index == -1:
         print("Geen PH-sensor gevonden.")
         sys.exit(1)
 
-    ph = devices[rtd_index]
+    return devices[device_index]
 
-    ph.write(f"Cal,?")
-    time.sleep(ph.long_timeout)
 
-    raw_output = ph.read()
+def ph_cal():
+
+    ph_device = find_device(99)
+
+    # devices = get_devices()
+
+    # if not devices:
+    #     print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
+    #     sys.exit(1)
+
+    # # Zoek de PH-sensor
+    # rtd_devices = [dev.address for dev in devices]
+    # rtd_index = rtd_devices.index(99) if 99 in rtd_devices else -1
+
+    # if rtd_index == -1:
+    #     print("Geen PH-sensor gevonden.")
+    #     sys.exit(1)
+
+    # ph = devices[rtd_index]
+
+    ph_device.write(f"Cal,?")
+    time.sleep(ph_device.long_timeout)
+
+    raw_output = ph_device.read()
 
     # value = raw_output.split(",")[1]
     value = int(raw_output.split(",")[1].rstrip("\0"))
 
-    update_yaml_flag("sensor_status", "ph_calibration", value)
+    update_yaml_flag("ph_cal_rsp", "ph_cal_rsp_status", value)
 
+def ph_cal_clear():
+    ph_device = find_device(99)
+    ph_device.write(f"Cal,clear")
+    time.sleep(ph_device.long_timeout)
+    return ph_device.read()
+
+def ph_cal_mid():
+    ph_device = find_device(99)
+    ph_device.write(f"Cal,mid,7.00")
+    time.sleep(ph_device.long_timeout)
+    return ph_device.read()   
+
+def ph_cal_low():
+    ph_device = find_device(99)
+    ph_device.write(f"Cal,low,4.00")
+    time.sleep(ph_device.long_timeout)
+    return ph_device.read()
+
+def ph_cal_high():
+    ph_device = find_device(99)
+    ph_device.write(f"Cal,high,10.00")
+    time.sleep(ph_device.long_timeout)
+    return ph_device.read()
 
 if __name__ == "__main__":
     print(read_all_once())
