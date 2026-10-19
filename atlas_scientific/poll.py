@@ -93,7 +93,7 @@ def read_all_once_temp_compensated():
     """
     devices = get_devices()
 
-    print(devices.name)
+    print([dev.name for dev in devices])
 
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
