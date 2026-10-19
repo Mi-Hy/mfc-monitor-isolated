@@ -250,7 +250,7 @@ def main_loop():
             update_yaml_flag("automations","update", 0)
 
         #   Check hydroponics sensors
-        check_sensor_functions()
+        check_sensor_functions(config)
 
 if __name__ == "__main__":
 
