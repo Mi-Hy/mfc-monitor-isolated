@@ -99,6 +99,7 @@ def read_all_once_temp_compensated():
 
     # Zoek de RTD-sensor
     rtd_devices = [dev for dev in devices if dev.address == "102"]
+    print(rtd_devices)
 
     if not rtd_devices:
         print("Geen RTD-sensor gevonden.")
