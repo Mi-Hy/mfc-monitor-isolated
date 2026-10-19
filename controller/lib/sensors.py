@@ -174,25 +174,7 @@ def find_device(device_number):
 
 
 def ph_cal():
-
     ph_device = find_device(99)
-
-    # devices = get_devices()
-
-    # if not devices:
-    #     print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
-    #     sys.exit(1)
-
-    # # Zoek de PH-sensor
-    # rtd_devices = [dev.address for dev in devices]
-    # rtd_index = rtd_devices.index(99) if 99 in rtd_devices else -1
-
-    # if rtd_index == -1:
-    #     print("Geen PH-sensor gevonden.")
-    #     sys.exit(1)
-
-    # ph = devices[rtd_index]
-
     ph_device.write(f"Cal,?")
     time.sleep(ph_device.long_timeout)
 
@@ -200,7 +182,6 @@ def ph_cal():
 
     # value = raw_output.split(",")[1]
     value = int(raw_output.split(",")[1].rstrip("\0"))
-
     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
 
 def ph_cal_clear():
