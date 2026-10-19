@@ -173,40 +173,97 @@ def find_device(device_number):
     return devices[device_index]
 
 
+# def ph_cal():
+#     ph_device = find_device(99)
+#     ph_device.write(f"Cal,?")
+#     time.sleep(ph_device.long_timeout)
+
+#     raw_output = ph_device.read()
+
+#     # value = raw_output.split(",")[1]
+#     value = int(raw_output.split(",")[1].rstrip("\0"))
+#     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
+
+# def ph_cal_clear():
+#     ph_device = find_device(99)
+#     ph_device.write(f"Cal,clear")
+#     time.sleep(ph_device.long_timeout)
+#     return ph_device.read()
+
+# def ph_cal_mid():
+#     ph_device = find_device(99)
+#     ph_device.write(f"Cal,mid,7.00")
+#     time.sleep(ph_device.long_timeout)
+#     return ph_device.read()   
+
+# def ph_cal_low():
+#     ph_device = find_device(99)
+#     ph_device.write(f"Cal,low,4.00")
+#     time.sleep(ph_device.long_timeout)
+#     return ph_device.read()
+
+# def ph_cal_high():
+#     ph_device = find_device(99)
+#     ph_device.write(f"Cal,high,10.00")
+#     time.sleep(ph_device.long_timeout)
+#     return ph_device.read()
+
+
 def ph_cal():
+    print("[Sensors][PH] Checking calibration status...")
     ph_device = find_device(99)
-    ph_device.write(f"Cal,?")
+    ph_device.write("Cal,?")
     time.sleep(ph_device.long_timeout)
 
     raw_output = ph_device.read()
-
-    # value = raw_output.split(",")[1]
     value = int(raw_output.split(",")[1].rstrip("\0"))
+
+    print(f"[Sensors][PH] Calibration status: {value}")
     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
 
+
 def ph_cal_clear():
+    print("[Sensors][PH] Clearing calibration...")
     ph_device = find_device(99)
-    ph_device.write(f"Cal,clear")
+    ph_device.write("Cal,clear")
     time.sleep(ph_device.long_timeout)
-    return ph_device.read()
+
+    response = ph_device.read()
+    print(f"[Sensors][PH] Clear calibration response: {response}")
+    return response
+
 
 def ph_cal_mid():
+    print("[Sensors][PH] Starting mid-point calibration (pH 7.00)...")
     ph_device = find_device(99)
-    ph_device.write(f"Cal,mid,7.00")
+    ph_device.write("Cal,mid,7.00")
     time.sleep(ph_device.long_timeout)
-    return ph_device.read()   
+
+    response = ph_device.read()
+    print(f"[Sensors][PH] Mid-point calibration response: {response}")
+    return response
+
 
 def ph_cal_low():
+    print("[Sensors][PH] Starting low-point calibration (pH 4.00)...")
     ph_device = find_device(99)
-    ph_device.write(f"Cal,low,4.00")
+    ph_device.write("Cal,low,4.00")
     time.sleep(ph_device.long_timeout)
-    return ph_device.read()
+
+    response = ph_device.read()
+    print(f"[Sensors][PH] Low-point calibration response: {response}")
+    return response
+
 
 def ph_cal_high():
+    print("[Sensors][PH] Starting high-point calibration (pH 10.00)...")
     ph_device = find_device(99)
-    ph_device.write(f"Cal,high,10.00")
+    ph_device.write("Cal,high,10.00")
     time.sleep(ph_device.long_timeout)
-    return ph_device.read()
+
+    response = ph_device.read()
+    print(f"[Sensors][PH] High-point calibration response: {response}")
+    return response
 
 if __name__ == "__main__":
     print(read_all_once())
