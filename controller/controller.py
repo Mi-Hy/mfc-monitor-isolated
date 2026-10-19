@@ -7,6 +7,7 @@ from lib.scheduler import Scheduler
 from filelock import FileLock
 from lib.influxdb import *
 from lib.configuration import *
+from lib.sensors import *
 
 import socket
 import threading
@@ -141,6 +142,13 @@ def update_automations(config):
         load_scheduler.start()
     else:
         load_scheduler.stop()   
+
+def check_sensor_functions(config):
+    if config.get("sensor_functions", {}).get("ph_cal_status", 0) == 1:
+
+        ph_cal()
+        
+        update_yaml_flag("sensor_functions", "ph_cal_status", 0)
 
 
 def main_loop():

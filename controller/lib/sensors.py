@@ -154,6 +154,32 @@ def read_all_once_temp_compensated():
     return sensor_data
 
 
+def ph_cal():
+    devices = get_devices()
+
+    if not devices:
+        print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
+        sys.exit(1)
+
+    # Zoek de RTD-sensor
+    rtd_devices = [dev.address for dev in devices]
+    # print(rtd_devices)
+
+    rtd_index = rtd_devices.index(99) if 99 in rtd_devices else -1
+
+    if rtd_index == -1:
+        print("Geen PH-sensor gevonden.")
+        sys.exit(1)
+
+    ph = devices[rtd_index]
+
+    ph.write(f"Cal,?")
+    time.sleep(ph.long_timeout)
+
+    raw_output = ph.read()
+
+    print(raw_output)
+
 
 if __name__ == "__main__":
     print(read_all_once())
