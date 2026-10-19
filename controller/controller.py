@@ -249,6 +249,9 @@ def main_loop():
             # Update flag in config file
             update_yaml_flag("automations","update", 0)
 
+        #   Check hydroponics sensors
+        check_sensor_functions()
+
 if __name__ == "__main__":
 
     # Start thread to start small server
