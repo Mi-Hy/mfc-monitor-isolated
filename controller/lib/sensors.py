@@ -179,7 +179,8 @@ def ph_cal():
 
     raw_output = ph.read()
 
-    value = raw_output.split(",")[1]
+    # value = raw_output.split(",")[1]
+    value = int(raw_output.split(",")[1].rstrip("\0"))
 
     update_yaml_flag("sensor_status", "ph_calibration", value)
 
