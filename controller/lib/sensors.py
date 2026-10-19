@@ -201,7 +201,7 @@ def ph_cal():
     # value = raw_output.split(",")[1]
     value = int(raw_output.split(",")[1].rstrip("\0"))
 
-    update_yaml_flag("ph_cal_rsp", "ph_cal_rsp_status", value)
+    update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
 
 def ph_cal_clear():
     ph_device = find_device(99)
