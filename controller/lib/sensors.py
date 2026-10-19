@@ -2,7 +2,7 @@
 
 import sys
 import time
-from AtlasI2C import AtlasI2C
+from lib.AtlasI2C import AtlasI2C
 import re
 
 
