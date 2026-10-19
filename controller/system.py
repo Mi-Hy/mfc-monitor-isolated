@@ -9,7 +9,8 @@ import asyncio
 import socket
 from lib.ds18b20 import *
 # from lib.socket_helper import *
-from atlas_scientific.poll import *
+# from atlas_scientific.poll import *
+from lib.sensors import *
 
 def get_cpu_temp():
     try:
@@ -53,11 +54,15 @@ if __name__ == "__main__":
         "temp": ds18b20[0],
     }
 
-    water_quality = read_all_once()
+    if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
+        water_quality = read_all_once()
+    else:
+        water_quality = read_all_once_temp_compensated()
 
 
     print("System data:", system_data)
     print("Temperature data:", temperature_data)
+    print("Water quality sensors:", water_quality)
 
     # Send data to influxdb server
     send_system_info(config, "[System]", temperature_data, system_data, water_quality)

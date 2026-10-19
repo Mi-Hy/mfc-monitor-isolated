@@ -33,3 +33,5 @@ trigger:
   load: 0
   system: 0
   voltage: 0
+sensor_configurations:
+  temp_compensation: 0
