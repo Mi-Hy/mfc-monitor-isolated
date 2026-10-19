@@ -98,14 +98,17 @@ def read_all_once_temp_compensated():
         sys.exit(1)
 
     # Zoek de RTD-sensor
+    # print([dev.address for dev in devices])
     rtd_devices = [dev for dev in devices if dev.address == "102"]
     print(rtd_devices)
 
-    if not rtd_devices:
+    rtd_index = rtd_devices.index(102) if 102 in rtd_devices else -1
+
+    if rtd_index == -1:
         print("Geen RTD-sensor gevonden.")
         sys.exit(1)
 
-    rtd = rtd_devices[0]
+    rtd = devices[rtd_index]
 
     # 1. Vraag de temperatuur op bij de RTD-sensor
     rtd.write("R")
