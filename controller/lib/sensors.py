@@ -231,7 +231,7 @@ def ph_cal_clear():
     response = ph_device.read()
     print(f"[Sensors][PH] Clear calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ph_cal_cleared_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ph_cal_ts_cleared", int(time.time()))
 
     return response
 
@@ -245,7 +245,7 @@ def ph_cal_mid():
     response = ph_device.read()
     print(f"[Sensors][PH] Mid-point calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ph_cal_mid7_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ph_cal_ts_mid7", int(time.time()))
 
     return response
 
@@ -259,7 +259,7 @@ def ph_cal_low():
     response = ph_device.read()
     print(f"[Sensors][PH] Low-point calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ph_cal_low4_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ph_cal_ts_low4", int(time.time()))
 
     return response
 
@@ -273,7 +273,7 @@ def ph_cal_high():
     response = ph_device.read()
     print(f"[Sensors][PH] High-point calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ph_cal_high10_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ph_cal_ts_high10", int(time.time()))
 
     return response
 
@@ -304,7 +304,7 @@ def do_cal_clear():
     response = do_device.read()
     print(f"[Sensors][DO] Clear calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "do_cal_cleared_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "do_cal_ts_cleared", int(time.time()))
     return response
 
 # calibrate to atmospheric oxygen levels
@@ -317,7 +317,7 @@ def do_cal_aol():
     response = do_device.read()
     print(f"[Sensors][DO] Air calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "do_cal_aol_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "do_cal_ts_aol", int(time.time()))
     return response
 
 # calibrate device to 0 dissolved oxygen
@@ -330,7 +330,7 @@ def do_cal_null():
     response = do_device.read()
     print(f"[Sensors][DO] Zero oxygen calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "do_cal_null_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "do_cal_ts_null", int(time.time()))
     return response
 
 
@@ -358,7 +358,7 @@ def ec_cal_clear():
     response = ec_device.read()
     print(f"[Sensors][EC] Clear calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ec_cal_cleared_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ec_cal_ts_cleared", int(time.time()))
     return response
 
 
@@ -371,7 +371,7 @@ def ec_cal_dry():
     response = ec_device.read()
     print(f"[Sensors][EC] Dry calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ec_cal_dry_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ec_cal_ts_dry", int(time.time()))
     return response
 
 
@@ -385,7 +385,7 @@ def ec_cal_one():
     response = ec_device.read()
     print(f"[Sensors][EC] One-point calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ec_cal_one_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ec_cal_ts_one", int(time.time()))
     return response
 
 
@@ -399,7 +399,7 @@ def ec_cal_low():
     response = ec_device.read()
     print(f"[Sensors][EC] Low-point calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ec_cal_low_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ec_cal_ts_low", int(time.time()))
     return response
 
 
@@ -413,7 +413,7 @@ def ec_cal_high():
     response = ec_device.read()
     print(f"[Sensors][EC] High-point calibration response: {response}")
 
-    update_yaml_flag("sensor_responses", "ec_cal_high_ts", int(time.time()))
+    update_yaml_flag("sensor_responses", "ec_cal_ts_high", int(time.time()))
     return response
 
 
