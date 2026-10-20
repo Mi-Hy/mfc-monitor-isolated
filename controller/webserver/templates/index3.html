@@ -1645,7 +1645,8 @@
                 if (Number.isFinite(number) && number > 0) {
                     // The response timestamps are Unix seconds; show a readable local date/time too.
                     if (String(value).length >= 9) {
-                        return `${value} · ${new Date(number * 1000).toLocaleString()}`;
+                        // return `${value} · ${new Date(number * 1000).toLocaleString()}`;
+                        return `${new Date(number * 1000).toLocaleString()}`;
                     }
                 }
                 return String(value);
