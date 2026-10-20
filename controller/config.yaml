@@ -18,6 +18,43 @@ influxdb:
   url: https://influxdb.dramcoserver.be/
 measurement_mode:
   device_mode: individual
+sensor_configurations:
+  temp_compensation: 0
+sensor_requests:
+  do_cal_req_aol: 0
+  do_cal_req_clear: 0
+  do_cal_req_null: 0
+  do_cal_req_status: 0
+  ec_cal_req_clear: 0
+  ec_cal_req_dry: 0
+  ec_cal_req_high: 0
+  ec_cal_req_low: 0
+  ec_cal_req_one: 0
+  ec_cal_req_status: 0
+  ec_cal_value_high: 0
+  ec_cal_value_low: 0
+  ec_cal_value_one: 0
+  ph_cal_req_clear: 0
+  ph_cal_req_high10: 0
+  ph_cal_req_low4: 0
+  ph_cal_req_mid7: 0
+  ph_cal_req_status: 0
+sensor_responses:
+  do_cal_rsp_status: 0
+  do_cal_ts_aol: 0
+  do_cal_ts_cleared: 0
+  do_cal_ts_null: 0
+  ec_cal_rsp_status: 0
+  ec_cal_ts_cleared: 0
+  ec_cal_ts_dry: 0
+  ec_cal_ts_high: 0
+  ec_cal_ts_low: 0
+  ec_cal_ts_one: 0
+  ph_cal_rsp_status: 0
+  ph_cal_ts_cleared: 0
+  ph_cal_ts_high10: 0
+  ph_cal_ts_low4: 0
+  ph_cal_ts_mid7: 0
 timer_settings:
   load_interval_hour: 0
   load_interval_minute: 10
@@ -33,17 +70,3 @@ trigger:
   load: 0
   system: 0
   voltage: 0
-sensor_configurations:
-  temp_compensation: 0
-sensor_requests:
-  ph_cal_req_clear: 0
-  ph_cal_req_low4: 0
-  ph_cal_req_mid7: 0
-  ph_cal_req_high10: 0
-  ph_cal_req_status: 0
-sensor_responses:
-  ph_cal_rsp_status: 0
-  ph_cal_low4_ts: 0
-  ph_cal_mid7_ts: 0
-  ph_cal_high10_ts: 0
-  ph_cal_cleared_ts: 0  

@@ -277,6 +277,152 @@ def ph_cal_high():
 
     return response
 
+
+
+
+# Dissolved Oxygen (DO)
+
+def do_cal():
+    print("[Sensors][DO] Checking calibration status...")
+    do_device = find_device(97)
+    do_device.write("Cal,?")
+    time.sleep(do_device.long_timeout)
+
+    raw_output = do_device.read()
+    value = int(raw_output.split(",")[1].rstrip("\0"))
+
+    print(f"[Sensors][DO] Calibration status: {value}")
+    update_yaml_flag("sensor_responses", "do_cal_rsp_status", value)
+
+
+def do_cal_clear():
+    print("[Sensors][DO] Clearing calibration...")
+    do_device = find_device(97)
+    do_device.write("Cal,clear")
+    time.sleep(do_device.long_timeout)
+
+    response = do_device.read()
+    print(f"[Sensors][DO] Clear calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "do_cal_cleared_ts", int(time.time()))
+    return response
+
+# calibrate to atmospheric oxygen levels
+def do_cal_aol():
+    print("[Sensors][DO] Starting air calibration...")
+    do_device = find_device(97)
+    do_device.write("Cal")
+    time.sleep(do_device.long_timeout)
+
+    response = do_device.read()
+    print(f"[Sensors][DO] Air calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "do_cal_aol_ts", int(time.time()))
+    return response
+
+# calibrate device to 0 dissolved oxygen
+def do_cal_null():
+    print("[Sensors][DO] Starting zero oxygen calibration...")
+    do_device = find_device(97)
+    do_device.write("Cal,0")
+    time.sleep(do_device.long_timeout)
+
+    response = do_device.read()
+    print(f"[Sensors][DO] Zero oxygen calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "do_cal_null_ts", int(time.time()))
+    return response
+
+
+# Electrical Conductivity (EC)
+
+def ec_cal():
+    print("[Sensors][EC] Checking calibration status...")
+    ec_device = find_device(100)
+    ec_device.write("Cal,?")
+    time.sleep(ec_device.long_timeout)
+
+    raw_output = ec_device.read()
+    value = int(raw_output.split(",")[1].rstrip("\0"))
+
+    print(f"[Sensors][EC] Calibration status: {value}")
+    update_yaml_flag("sensor_responses", "ec_cal_rsp_status", value)
+
+
+def ec_cal_clear():
+    print("[Sensors][EC] Clearing calibration...")
+    ec_device = find_device(100)
+    ec_device.write("Cal,clear")
+    time.sleep(ec_device.long_timeout)
+
+    response = ec_device.read()
+    print(f"[Sensors][EC] Clear calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ec_cal_cleared_ts", int(time.time()))
+    return response
+
+
+def ec_cal_dry():
+    print("[Sensors][EC] Starting dry calibration...")
+    ec_device = find_device(100)
+    ec_device.write("Cal,dry")
+    time.sleep(ec_device.long_timeout)
+
+    response = ec_device.read()
+    print(f"[Sensors][EC] Dry calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ec_cal_dry_ts", int(time.time()))
+    return response
+
+
+def ec_cal_one():
+    value = get_ec_cal_value("ec_cal_value_one")
+    print(f"[Sensors][EC] Starting one-point calibration ({value})...")
+    ec_device = find_device(100)
+    ec_device.write(f"Cal,one,{value}")
+    time.sleep(ec_device.long_timeout)
+
+    response = ec_device.read()
+    print(f"[Sensors][EC] One-point calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ec_cal_one_ts", int(time.time()))
+    return response
+
+
+def ec_cal_low():
+    value = get_ec_cal_value("ec_cal_value_low")
+    print(f"[Sensors][EC] Starting low-point calibration ({value})...")
+    ec_device = find_device(100)
+    ec_device.write(f"Cal,low,{value}")
+    time.sleep(ec_device.long_timeout)
+
+    response = ec_device.read()
+    print(f"[Sensors][EC] Low-point calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ec_cal_low_ts", int(time.time()))
+    return response
+
+
+def ec_cal_high():
+    value = get_ec_cal_value("ec_cal_value_high")
+    print(f"[Sensors][EC] Starting high-point calibration ({value})...")
+    ec_device = find_device(100)
+    ec_device.write(f"Cal,high,{value}")
+    time.sleep(ec_device.long_timeout)
+
+    response = ec_device.read()
+    print(f"[Sensors][EC] High-point calibration response: {response}")
+
+    update_yaml_flag("sensor_responses", "ec_cal_high_ts", int(time.time()))
+    return response
+
+
+
+def get_ec_cal_value(key):
+    config = retrieve_yaml_file()  # Vervang door jouw bestaande YAML-inleesfunctie
+    return config["sensor_requests"][key]
+
+
 if __name__ == "__main__":
     print(read_all_once())
     print(read_all_once_temp_compensated())

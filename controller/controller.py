@@ -144,21 +144,88 @@ def update_automations(config):
         load_scheduler.stop()   
 
 def check_sensor_functions(config):
+    # pH
     if config.get("sensor_requests", {}).get("ph_cal_req_status", 0) == 1:
-        ph_cal()  
+        ph_cal()
         update_yaml_flag("sensor_requests", "ph_cal_req_status", 0)
+
     if config.get("sensor_requests", {}).get("ph_cal_req_clear", 0) == 1:
         ph_cal_clear()
         update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
+
     if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
         ph_cal_low()
         update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
+
     if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
         ph_cal_mid()
         update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
+
     if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
         ph_cal_high()
         update_yaml_flag("sensor_requests", "ph_cal_req_high10", 0)
+
+    # Dissolved Oxygen (DO)
+    if config.get("sensor_requests", {}).get("do_cal_req_status", 0) == 1:
+        do_cal()
+        update_yaml_flag("sensor_requests", "do_cal_req_status", 0)
+
+    if config.get("sensor_requests", {}).get("do_cal_req_clear", 0) == 1:
+        do_cal_clear()
+        update_yaml_flag("sensor_requests", "do_cal_req_clear", 0)
+
+    if config.get("sensor_requests", {}).get("do_cal_req_aol", 0) == 1:
+        do_cal_aol()
+        update_yaml_flag("sensor_requests", "do_cal_req_aol", 0)
+
+    if config.get("sensor_requests", {}).get("do_cal_req_null", 0) == 1:
+        do_cal_null()
+        update_yaml_flag("sensor_requests", "do_cal_req_null", 0)
+
+    # Electrical Conductivity (EC)
+    if config.get("sensor_requests", {}).get("ec_cal_req_status", 0) == 1:
+        ec_cal()
+        update_yaml_flag("sensor_requests", "ec_cal_req_status", 0)
+
+    if config.get("sensor_requests", {}).get("ec_cal_req_clear", 0) == 1:
+        ec_cal_clear()
+        update_yaml_flag("sensor_requests", "ec_cal_req_clear", 0)
+
+    if config.get("sensor_requests", {}).get("ec_cal_req_dry", 0) == 1:
+        ec_cal_dry()
+        update_yaml_flag("sensor_requests", "ec_cal_req_dry", 0)
+
+    if config.get("sensor_requests", {}).get("ec_cal_req_one", 0) == 1:
+        ec_cal_one()
+        update_yaml_flag("sensor_requests", "ec_cal_req_one", 0)
+
+    if config.get("sensor_requests", {}).get("ec_cal_req_low", 0) == 1:
+        ec_cal_low()
+        update_yaml_flag("sensor_requests", "ec_cal_req_low", 0)
+
+    if config.get("sensor_requests", {}).get("ec_cal_req_high", 0) == 1:
+        ec_cal_high()
+        update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
+
+    # # EC calibration values
+    # if config.get("sensor_requests", {}).get("ec_cal_value_one", 0) != 0:
+    #     ec_cal_set_value_one(
+    #         config["sensor_requests"]["ec_cal_value_one"]
+    #     )
+    #     update_yaml_flag("sensor_requests", "ec_cal_value_one", 0)
+
+    # if config.get("sensor_requests", {}).get("ec_cal_value_low", 0) != 0:
+    #     ec_cal_set_value_low(
+    #         config["sensor_requests"]["ec_cal_value_low"]
+    #     )
+    #     update_yaml_flag("sensor_requests", "ec_cal_value_low", 0)
+
+    # if config.get("sensor_requests", {}).get("ec_cal_value_high", 0) != 0:
+    #     ec_cal_set_value_high(
+    #         config["sensor_requests"]["ec_cal_value_high"]
+    #     )
+    #     update_yaml_flag("sensor_requests", "ec_cal_value_high", 0)
+
 def main_loop():
 
     #   Load YAML config file
