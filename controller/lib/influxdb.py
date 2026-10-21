@@ -112,11 +112,19 @@ def send_system_info(config, debug_name, temperature_data, system_data, water_qu
         .field("system-cpu-temp", system_data["system-cpu-temp"])
         .field("system-cpu-load", system_data["system-cpu-load"])
         .field("system-disk", system_data["system-disk"])
-        .field("DO", water_quality["DO"])
-        .field("PH", water_quality["PH"])
-        .field("EC", water_quality["EC"])
-        .field("RTD", water_quality["RTD"])
+        # .field("DO", water_quality["DO"])
+        # .field("PH", water_quality["PH"])
+        # .field("EC", water_quality["EC"])
+        # .field("RTD", water_quality["RTD"])
     )
+
+    # Add only water quality fields that are available
+    for sensor in ("DO", "PH", "EC", "RTD"):
+        if sensor in water_quality and water_quality[sensor] is not None:
+            point = point.field(sensor, float(water_quality[sensor]))
+        else:
+            debug(debug_name, f"[Warning] Sensor {sensor} has no value; skipping.")
+
     print(point)
     # Write data in batch
     try:
