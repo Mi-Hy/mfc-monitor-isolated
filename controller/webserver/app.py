@@ -76,13 +76,20 @@ def index():
     return render_template('index5.html', config=config)
 
 
-# Initialiseer de Microdia camera.
-# Verander de '0' naar '1' of '2' als je camera op /dev/video1 of /dev/video2 zit.
-camera = cv2.VideoCapture(0)
+# # Initialiseer de Microdia camera.
+# # Verander de '0' naar '1' of '2' als je camera op /dev/video1 of /dev/video2 zit.
+# camera = cv2.VideoCapture(0)
 
-# Optioneel: Stel de resolutie lager in als de stream buffert of hapert
+# # Optioneel: Stel de resolutie lager in als de stream buffert of hapert
+# camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+# camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+
+camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
+
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+camera.set(cv2.CAP_PROP_FPS, 15)
 
 # def generate_frames():
 #     while True:
