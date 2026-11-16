@@ -87,8 +87,8 @@ def index():
 
 camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
-camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 960)
 camera.set(cv2.CAP_PROP_FPS, 15)
 
 # def generate_frames():
