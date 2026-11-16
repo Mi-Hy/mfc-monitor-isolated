@@ -84,25 +84,69 @@ camera = cv2.VideoCapture(0)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-def generate_frames():
-    while True:
-        # Lees het camerabeeld frame voor frame uit
-        success, frame = camera.read()
-        if not success:
-            break
-        else:
-            # Codeer het frame naar JPEG-formaat
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
+# def generate_frames():
+#     while True:
+#         # Lees het camerabeeld frame voor frame uit
+#         success, frame = camera.read()
+#         if not success:
+#             break
+#         else:
+#             # Codeer het frame naar JPEG-formaat
+#             ret, buffer = cv2.imencode('.jpg', frame)
+#             frame = buffer.tobytes()
 
-            # Gebruik het multipart/x-mixed-replace protocol om de frames te streamen
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+#             # Gebruik het multipart/x-mixed-replace protocol om de frames te streamen
+#             yield (b'--frame\r\n'
+#                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+# @app.route('/video_feed')
+# def video_feed():
+#     # Retourneer de gegenereerde videostream
+#     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+if not camera.isOpened():
+    print("ERROR: Could not open Microdia camera")
+else:
+    print("Microdia camera successfully opened")
+
+
+def generate_frames():
+
+    while True:
+
+        success, frame = camera.read()
+
+        if not success:
+            print("ERROR: Could not read camera frame")
+            break
+
+        ret, buffer = cv2.imencode(
+            '.jpg',
+            frame,
+            [int(cv2.IMWRITE_JPEG_QUALITY), 80]
+        )
+
+        if not ret:
+            continue
+
+        frame_bytes = buffer.tobytes()
+
+        yield (
+            b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' +
+            frame_bytes +
+            b'\r\n'
+        )
+
 
 @app.route('/video_feed')
 def video_feed():
-    # Retourneer de gegenereerde videostream
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    return Response(
+        generate_frames(),
+        mimetype='multipart/x-mixed-replace; boundary=frame'
+    )
 
 @app.route('/save_config', methods=['POST'])
 @requires_auth
