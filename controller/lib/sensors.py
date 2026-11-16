@@ -225,11 +225,24 @@ def find_device(device_number):
 def ph_cal():
     print("[Sensors][PH] Checking calibration status...")
 
+    # ph_device = find_device(99)
+    # ph_device.write("Cal,?")
+    # time.sleep(ph_device.long_timeout)
+
+    # raw_output = ph_device.read()
+
     ph_device = find_device(99)
+
+    print(f"Device: {ph_device}")
+    print(f"Address: {ph_device.address}")
+
     ph_device.write("Cal,?")
     time.sleep(ph_device.long_timeout)
 
     raw_output = ph_device.read()
+    print(f"Response: {raw_output!r}")
+
+
 
     print(f"[Sensors][PH] Raw calibration response: {raw_output!r}")
 
