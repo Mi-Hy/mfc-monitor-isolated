@@ -76,40 +76,12 @@ def index():
     return render_template('index5.html', config=config)
 
 
-# # Initialiseer de Microdia camera.
-# # Verander de '0' naar '1' of '2' als je camera op /dev/video1 of /dev/video2 zit.
-# camera = cv2.VideoCapture(0)
-
-# # Optioneel: Stel de resolutie lager in als de stream buffert of hapert
-# camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-# camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
 
 camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 960)
 camera.set(cv2.CAP_PROP_FPS, 15)
-
-# def generate_frames():
-#     while True:
-#         # Lees het camerabeeld frame voor frame uit
-#         success, frame = camera.read()
-#         if not success:
-#             break
-#         else:
-#             # Codeer het frame naar JPEG-formaat
-#             ret, buffer = cv2.imencode('.jpg', frame)
-#             frame = buffer.tobytes()
-
-#             # Gebruik het multipart/x-mixed-replace protocol om de frames te streamen
-#             yield (b'--frame\r\n'
-#                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-# @app.route('/video_feed')
-# def video_feed():
-#     # Retourneer de gegenereerde videostream
-#     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if not camera.isOpened():
@@ -147,13 +119,27 @@ def generate_frames():
         )
 
 
+# @app.route('/video_feed')
+# def video_feed():
+
+#     return Response(
+#         generate_frames(),
+#         mimetype='multipart/x-mixed-replace; boundary=frame'
+#     )
+
 @app.route('/video_feed')
+@requires_auth
 def video_feed():
 
-    return Response(
+    response = Response(
         generate_frames(),
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
+
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+
+    return response
 
 @app.route('/save_config', methods=['POST'])
 @requires_auth
