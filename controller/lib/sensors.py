@@ -209,18 +209,48 @@ def find_device(device_number):
 #     return ph_device.read()
 
 
+# def ph_cal():
+#     print("[Sensors][PH] Checking calibration status...")
+#     ph_device = find_device(99)
+#     ph_device.write("Cal,?")
+#     time.sleep(ph_device.long_timeout)
+
+#     raw_output = ph_device.read()
+#     value = int(raw_output.split(",")[1].rstrip("\0"))
+
+#     print(f"[Sensors][PH] Calibration status: {value}")
+#     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
+
+
 def ph_cal():
     print("[Sensors][PH] Checking calibration status...")
+
     ph_device = find_device(99)
     ph_device.write("Cal,?")
     time.sleep(ph_device.long_timeout)
 
     raw_output = ph_device.read()
-    value = int(raw_output.split(",")[1].rstrip("\0"))
+
+    print(f"[Sensors][PH] Raw calibration response: {raw_output!r}")
+
+    if not raw_output:
+        print("[Sensors][PH] ERROR: Empty response from sensor.")
+        return
+
+    parts = raw_output.rstrip("\0").split(",")
+
+    if len(parts) < 2 or not parts[1].strip():
+        print("[Sensors][PH] ERROR: Invalid calibration response.")
+        return
+
+    try:
+        value = int(parts[1].strip())
+    except ValueError:
+        print(f"[Sensors][PH] ERROR: Invalid status value: {parts[1]!r}")
+        return
 
     print(f"[Sensors][PH] Calibration status: {value}")
     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
-
 
 def ph_cal_clear():
     print("[Sensors][PH] Clearing calibration...")
