@@ -7,6 +7,7 @@ from filelock import FileLock
 import sys
 from pathlib import Path
 from functools import wraps
+import cv2
 
 PC_DEBUG = True
 
@@ -72,7 +73,36 @@ def index():
     config = retrieve_yaml_file()
     print(config)
 
-    return render_template('index4.html', config=config)
+    return render_template('index5.html', config=config)
+
+
+# Initialiseer de Microdia camera.
+# Verander de '0' naar '1' of '2' als je camera op /dev/video1 of /dev/video2 zit.
+camera = cv2.VideoCapture(0)
+
+# Optioneel: Stel de resolutie lager in als de stream buffert of hapert
+camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+def generate_frames():
+    while True:
+        # Lees het camerabeeld frame voor frame uit
+        success, frame = camera.read()
+        if not success:
+            break
+        else:
+            # Codeer het frame naar JPEG-formaat
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+
+            # Gebruik het multipart/x-mixed-replace protocol om de frames te streamen
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/video_feed')
+def video_feed():
+    # Retourneer de gegenereerde videostream
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/save_config', methods=['POST'])
 @requires_auth
