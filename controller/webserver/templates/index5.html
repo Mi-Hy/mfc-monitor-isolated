@@ -189,10 +189,27 @@
 
         .tab-list {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            column-gap: 12px;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 12px;
             align-items: center;
             margin: 0 0 24px;
+        }
+
+        /* Three tabs on the first row; two centered tabs on the second. */
+        .tab-connector {
+            display: none;
+        }
+
+        .tab-link {
+            grid-column: span 2;
+        }
+
+        .tab-link:nth-of-type(4) {
+            grid-column: 2 / span 2;
+        }
+
+        .tab-link:nth-of-type(5) {
+            grid-column: 4 / span 2;
         }
 
         .tab-link {
@@ -909,7 +926,10 @@
                 gap: 10px;
             }
 
-            .tab-link {
+            .tab-link,
+            .tab-link:nth-of-type(4),
+            .tab-link:nth-of-type(5) {
+                grid-column: 1;
                 min-height: 72px;
             }
 
