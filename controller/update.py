@@ -246,10 +246,10 @@ if __name__ == "__main__":
 
                 elif sensor_type == "INA226":
                     # INA226 driver returns A -> mA
-                    current_ma = current * 1000 * 15185/10000
+                    current_ua = current * 1e6 * 15185/10000
 
                 buffer_voltages.append(voltage_mv*9516/10000)
-                buffer_currents.append(current_ma)
+                buffer_currents.append(current_ua)
 
             except Exception as e:
 
@@ -302,11 +302,11 @@ if __name__ == "__main__":
                 f"[Cell {i + 1}] "
                 f"{sensor_type} 0x{ina_addresses[i]:02X} "
                 f"Buffer Current: "
-                f"{buffer_current_median:.2f} mA"
+                f"{buffer_current_median:.3f} mA"
             )
 
             current_buffer.append(
-                round(buffer_current_median, 2)
+                round(buffer_current_median, 3)
             )
 
         else:
