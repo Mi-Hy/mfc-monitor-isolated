@@ -105,6 +105,8 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
                 max_expected_current=0.8
             )
 
+            print(ina.diagnostics())
+
         else:
             raise ValueError(
                 f"Unsupported sensor type: {sensor_type}"
