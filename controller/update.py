@@ -1,7 +1,7 @@
 import time
 from statistics import median
 
-import board
+# import board
 from adafruit_ina219 import INA219, Gain
 
 from lib.influxdb import *
