@@ -109,7 +109,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
             print(ina.diagnostics())
             raw = ina._read_register(0x01)
             print(f"Raw shunt register: 0x{raw:04X}")
-            print(f"Shunt voltage: {raw * 2.5e-6 * 1000:.3f} mV")
+            print(f"Shunt voltage: {raw * 2.5e-6 * 952:.3f} mV")
 
         else:
             raise ValueError(
