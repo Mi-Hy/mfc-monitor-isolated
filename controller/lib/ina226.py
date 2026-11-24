@@ -1,3 +1,4 @@
+from smbus2 import SMBus
 
 class INA226:
 
@@ -112,7 +113,6 @@ class INA226:
 
 
 
-# from smbus2 import SMBus
 
 
 # class INA226:
