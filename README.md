@@ -23,7 +23,7 @@ This configuration change is necessary because the Raspberry Pi 5 has a higher p
 	sudo apt update
 	sudo apt install git -y
 	```
-- Git clone via SSH KEY on rpi in home dir: `git clone git@github.com:Mi-Hy/mfc-monitor-hw2.git`
+- Git clone via SSH KEY on rpi in home dir: `git clone git@github.com:Mi-Hy/mfc-monitor-isolated.git`
 
 ### 3️⃣ Enable I2C
 - `sudo raspi-config`
