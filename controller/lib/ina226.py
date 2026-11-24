@@ -13,7 +13,7 @@ class INA226:
         address,
         bus=1,
         shunt_resistance=0.1,
-        max_expected_current=0.8
+        max_expected_current=1
     ):
 
         self.address = address
