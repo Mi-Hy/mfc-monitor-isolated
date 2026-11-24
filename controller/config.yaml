@@ -8,8 +8,9 @@ automations:
   auto_volt_poll: 1
   update: 0
 fixed_configurations:
-  device_name: MFC02
+  device_name: MFC01
   firmware_version: v0.0.1
+  sensor_type: INA226
 influxdb:
   bucket: mfc-data
   org: Dramco
