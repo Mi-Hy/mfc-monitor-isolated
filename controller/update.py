@@ -294,7 +294,7 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"{sensor_type} 0x{INA_ADDRESSES[i]:02X} "
+                f"{sensor_type} 0x{ina_addresses[i]:02X} "
                 f"Buffer Current: "
                 f"{buffer_current_median:.2f} mA"
             )
