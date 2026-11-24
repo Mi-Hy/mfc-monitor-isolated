@@ -31,7 +31,7 @@ def set_voltage(dac, voltage):
 
 try:
     # DAC op adres 0x60: 1.0 V
-    set_voltage(dac_1, 0.5)
+    set_voltage(dac_1, 5.0)
 
     # DAC op adres 0x61: 3.0 V
     set_voltage(dac_2, 3.0)
