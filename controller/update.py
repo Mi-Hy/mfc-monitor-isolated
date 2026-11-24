@@ -76,7 +76,7 @@ def initialize_ina_devices(sensor_type, cells):
 
     ina_devices = []
 
-    for cell in cells:
+    for cell in range(cells):
 
         if sensor_type == "INA219":
 
