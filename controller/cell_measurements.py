@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 CELLS = 8
 
 # INA219 I2C addresses
-INA219_ADDRESSES = [
+INA_ADDRESSES = [
     0x40,
     0x41,
     0x42,
@@ -35,25 +35,40 @@ i2c = board.I2C()
 
 
 # -------------------------------------------------------------------------
-# INA219 initialiseren
+# Initialize INA-sensors
 # -------------------------------------------------------------------------
 
-ina219_devices = []
+def initialize_ina_devices(sensor_type):
 
-for address in INA219_ADDRESSES:
+    ina_devices = []
 
-    ina219 = INA219(i2c, addr=address)
+    if sensor_type == "INA219":
 
-    # Maximale gevoeligheid:
-    # ±40 mV shunt-voltage range
-    ina219.gain = Gain.DIV_1_40MV
+        for address in INA_ADDRESSES:
 
-    # Shuntweerstand = 100 mΩ
-    ina219.shunt_resistance = 0.1
+            ina219 = INA219(i2c, addr=address)
 
-    ina219_devices.append(ina219)
+            # Maximale gevoeligheid:
+            # ±40 mV shunt-voltage range
+            ina219.gain = Gain.DIV_1_40MV
 
-    print(f"INA219 initialized at 0x{address:02X}")
+            # Shuntweerstand = 100 mΩ
+            ina219.shunt_resistance = 0.1
+
+            ina_devices.append(ina219)
+
+            print(f"INA219 initialized at 0x{address:02X}")
+
+            return ina_devices
+
+    if sensor_type == "INA226":
+
+        for address in INA_ADDRESSES:
+
+            # INA226 is not implemented yet
+            print(f"INA226 is not implemented yet at 0x{address:02X}")
+
+            return ina_devices
 
 
 # -------------------------------------------------------------------------
@@ -65,6 +80,10 @@ if __name__ == "__main__":
     # Get config file
     config = retrieve_yaml_file()
 
+    # Get sensor type from config file
+    sensor_type = config.get("fixed_configurations", {}).get("sensor_type", "INA219")
+
+    # Check if load test is running
     while config['activity']['load'] == 1:
 
         print("[Voltage] ⏳ Waiting for load test to complete...")
@@ -73,10 +92,13 @@ if __name__ == "__main__":
 
         config = retrieve_yaml_file()
 
+    # Update activity flag in config.yaml to indicate that cell measurement is in progress
     update_yaml_flag("activity", "voltage", 1)
 
     voltage_buffer = []
     current_buffer = []
+
+    ina_devices = initialize_ina_devices(sensor_type)
 
 
     for i in range(CELLS):
@@ -97,30 +119,45 @@ if __name__ == "__main__":
         # Cell 8 -> 0x47
         # -------------------------------------------------------------
 
-        ina219 = ina219_devices[i]
+        if sensor_type == "INA219":
 
-        buffer_voltages = []
-        buffer_currents = []
+            ina219 = ina_devices[i]
 
-        for _ in range(5):
+            buffer_voltages = []
+            buffer_currents = []
 
-            try:
-                # Voltage
-                voltage = ina219.bus_voltage
-                voltage_mv = voltage * 1000
-                buffer_voltages.append(voltage_mv)
+            for _ in range(5):
 
-                # Current
-                current = ina219.current
-                buffer_currents.append(current)
+                try:
+                    # Voltage
+                    voltage = ina219.bus_voltage
+                    voltage_mv = voltage * 1000
+                    buffer_voltages.append(voltage_mv)
 
-            except Exception as e:
-                print(
-                    f"[Cell {i + 1}] "
-                    f"INA219 read error: {e}"
-                )
+                    # Current
+                    current = ina219.current
+                    buffer_currents.append(current)
 
-            time.sleep(0.05)
+                except Exception as e:
+                    print(
+                        f"[Cell {i + 1}] "
+                        f"INA219 read error: {e}"
+                    )
+
+                time.sleep(0.05)
+
+        if sensor_type == "INA226":
+
+            ina226 = ina_devices[i]
+            
+            # INA226 is not implemented yet
+            print(
+                f"[Cell {i + 1}] "
+                f"INA226 is not implemented yet"
+            )
+
+            buffer_voltages = []
+            buffer_currents = []
 
         # -------------------------------------------------------------
         # Median of the 5 voltage measurements
@@ -132,7 +169,7 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"INA219 0x{INA219_ADDRESSES[i]:02X} "
+                f"{sensor_type} 0x{INA_ADDRESSES[i]:02X} "
                 f"Buffer Voltage: "
                 f"{buffer_voltage_median:.1f} mV"
             )
@@ -145,7 +182,7 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"Could not read INA219 voltage"
+                f"Could not read {sensor_type} voltage"
             )
 
             voltage_buffer.append(0)
@@ -161,7 +198,7 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"INA219 0x{INA219_ADDRESSES[i]:02X} "
+                f"{sensor_type} 0x{INA_ADDRESSES[i]:02X} "
                 f"Buffer Current: "
                 f"{buffer_current_median:.2f} mA"
             )
@@ -174,7 +211,7 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"Could not read INA219 current"
+                f"Could not read {sensor_type} current"
             )
 
             current_buffer.append(0)

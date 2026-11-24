@@ -230,7 +230,7 @@ def main_loop():
 
     #   Load YAML config file
     config = retrieve_yaml_file()
-
+    
     #   Init auto measurement settings
     update_system_timer_settings(config["timer_settings"])
     update_voltage_timer_settings(config["timer_settings"])
