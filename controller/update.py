@@ -74,13 +74,11 @@ i2c = board.I2C()
 
 def initialize_ina_devices(sensor_type, cells):
 
-    ina_devices = []
-
     for cell in range(cells):
 
         if sensor_type == "INA219":
 
-            ina = INA219(i2c, addr=ina_devices[cell])
+            ina = INA219(i2c, addr=INA_ADDRESSES[cell])
 
             ina.gain = Gain.DIV_1_40MV
             ina.shunt_resistance = 0.1
@@ -88,7 +86,7 @@ def initialize_ina_devices(sensor_type, cells):
         elif sensor_type == "INA226":
 
             ina = INA226(
-                address=ina_devices[cell],
+                address=INA_ADDRESSES[cell],
                 bus=1,
                 shunt_resistance=0.1,
                 max_expected_current=0.8
@@ -103,7 +101,7 @@ def initialize_ina_devices(sensor_type, cells):
 
         print(
             f"{sensor_type} initialized at "
-            f"0x{ina_devices[cell]:02X}"
+            f"0x{INA_ADDRESSES[cell]:02X}"
         )
 
     return ina_devices
