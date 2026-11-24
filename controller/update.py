@@ -13,8 +13,19 @@ import RPi.GPIO as GPIO
 from lib.ina226 import INA226
 
 # INA219 I2C addresses
-INA_ADDRESSES = [
+INA219_ADDRESSES = [
     0x40,
+    0x41,
+    0x42,
+    0x43,
+    0x44,
+    0x45,
+    0x46,
+    0x47
+]
+
+INA216_ADDRESSES = [
+    0x44,
     0x41,
     0x42,
     0x43,
@@ -72,7 +83,7 @@ i2c = board.I2C()
 
 
 
-def initialize_ina_devices(sensor_type, cells):
+def initialize_ina_devices(sensor_type, cells, ina_addresses):
 
     for cell in range(cells):
 
@@ -142,7 +153,7 @@ if __name__ == "__main__":
     voltage_buffer = []
     current_buffer = []
 
-    ina_devices = initialize_ina_devices(sensor_type, cells=cells)
+    ina_devices = initialize_ina_devices(sensor_type, cells=cells, INA216_ADDRESSES)
 
 
     for i in range(cells):
