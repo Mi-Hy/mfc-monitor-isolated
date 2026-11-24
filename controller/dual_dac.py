@@ -12,7 +12,7 @@ dac_1 = adafruit_mcp4725.MCP4725(i2c, address=0x60)
 dac_2 = adafruit_mcp4725.MCP4725(i2c, address=0x61)
 
 # Referentiespanning (VDD van de DAC)
-VREF = 5.25
+VREF = 5.45
 
 def set_voltage(dac, voltage):
     """
@@ -31,7 +31,7 @@ def set_voltage(dac, voltage):
 
 try:
     # DAC op adres 0x60: 1.0 V
-    set_voltage(dac_1, 1.0)
+    set_voltage(dac_1, 3.0)
 
     # DAC op adres 0x61: 3.0 V
     set_voltage(dac_2, 3.0)
