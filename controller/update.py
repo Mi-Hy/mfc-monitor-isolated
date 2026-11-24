@@ -125,6 +125,10 @@ if __name__ == "__main__":
     # Get number of cells from config file
     cells = config.get("fixed_configurations", {}).get("cells", 1)
 
+    # Print sensor type and number of cells
+    print(f"Sensor type: {sensor_type}")
+    print(f"Number of cells: {cells}")
+
     # Check if load test is running
     while config['activity']['load'] == 1:
 
