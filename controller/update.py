@@ -12,9 +12,6 @@ import RPi.GPIO as GPIO
 
 from lib.ina226 import INA226
 
-
-CELLS = 8
-
 # INA219 I2C addresses
 INA_ADDRESSES = [
     0x40,
@@ -75,7 +72,7 @@ i2c = board.I2C()
 
 
 
-def initialize_ina_devices(sensor_type):
+def initialize_ina_devices(sensor_type, cells=CELLS):
 
     ina_devices = []
 
@@ -125,6 +122,9 @@ if __name__ == "__main__":
     # Get sensor type from config file
     sensor_type = config.get("fixed_configurations", {}).get("sensor_type", "INA219")
 
+    # Get number of cells from config file
+    cells = config.get("fixed_configurations", {}).get("cells", 1)
+
     # Check if load test is running
     while config['activity']['load'] == 1:
 
@@ -140,10 +140,10 @@ if __name__ == "__main__":
     voltage_buffer = []
     current_buffer = []
 
-    ina_devices = initialize_ina_devices(sensor_type)
+    ina_devices = initialize_ina_devices(sensor_type, cells=cells)
 
 
-    for i in range(CELLS):
+    for i in range(cells):
 
 
         # -------------------------------------------------------------
@@ -360,7 +360,7 @@ device_mode = config.get(
     "individual"
 )
 
-print("CELLS:", CELLS)
+print("CELLS:", cells)
 print("voltage_buffer:", voltage_buffer)
 print("length:", len(voltage_buffer))
 
@@ -386,12 +386,12 @@ try:
 
     voltage_data = {
         f"cell_{i}": voltage_buffer[i]
-        for i in range(CELLS)
+        for i in range(cells)
     }
 
     current_data = {
         f"cell_{i}": current_buffer[i]
-        for i in range(CELLS)
+        for i in range(cells)
     }
 
 except IndexError as e:

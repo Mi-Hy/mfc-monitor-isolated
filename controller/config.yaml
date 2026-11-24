@@ -11,6 +11,7 @@ fixed_configurations:
   device_name: MFC01
   firmware_version: v0.0.1
   sensor_type: INA226
+  cells: 1
 influxdb:
   bucket: mfc-data
   org: Dramco
