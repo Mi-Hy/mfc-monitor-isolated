@@ -246,10 +246,10 @@ if __name__ == "__main__":
 
                 elif sensor_type == "INA226":
                     # INA226 driver returns A -> mA
-                    current_ua = current * 1e6 * 15185/10000
+                    current_ma = current * 1e3 * 15185/10000
 
                 buffer_voltages.append(voltage_mv*9516/10000)
-                buffer_currents.append(current_ua)
+                buffer_currents.append(current_ma)
 
             except Exception as e:
 
