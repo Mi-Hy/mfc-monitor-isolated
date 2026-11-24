@@ -24,7 +24,7 @@ INA219_ADDRESSES = [
     0x47
 ]
 
-INA216_ADDRESSES = [
+INA226_ADDRESSES = [
     0x44,
     0x41,
     0x42,
@@ -155,7 +155,9 @@ if __name__ == "__main__":
     voltage_buffer = []
     current_buffer = []
 
-    ina_devices = initialize_ina_devices(sensor_type, cells, INA216_ADDRESSES)
+    ina_addresses = INA219_ADDRESSES if sensor_type == "INA219" else INA226_ADDRESSES
+
+    ina_devices = initialize_ina_devices(sensor_type, cells, ina_addresses)
 
 
     for i in range(cells):
@@ -263,7 +265,7 @@ if __name__ == "__main__":
 
             print(
                 f"[Cell {i + 1}] "
-                f"{sensor_type} 0x{INA_ADDRESSES[i]:02X} "
+                f"{sensor_type} 0x{ina_addresses[i]:02X} "
                 f"Buffer Voltage: "
                 f"{buffer_voltage_median:.1f} mV"
             )
