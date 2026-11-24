@@ -34,7 +34,7 @@ try:
     set_voltage(dac_1, 0.25)
 
     # DAC op adres 0x61: 3.0 V
-    set_voltage(dac_2, 3.0)
+    set_voltage(dac_2, 0.3)
 
     print("Beide DAC-uitgangen zijn ingesteld.")
 
