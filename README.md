@@ -34,13 +34,7 @@ This configuration change is necessary because the Raspberry Pi 5 has a higher p
   sudo apt install i2c-tools
   sudo i2cdetect -y 1
   ```
-### 4️⃣ Check energy profiler
-- Install screen
-	```
-	sudo apt update
-	sudo apt install screen
-	```
-- `screen /dev/ttyUSB0 115200`
+### 4️⃣ 
 
 ### 5️⃣ Connection with temperature sensors DS18B20
 1. Connect D to GPIO4
