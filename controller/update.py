@@ -85,6 +85,8 @@ i2c = board.I2C()
 
 def initialize_ina_devices(sensor_type, cells, ina_addresses):
 
+    ina_devices = []
+
     for cell in range(cells):
 
         if sensor_type == "INA219":
