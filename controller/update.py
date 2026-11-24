@@ -89,7 +89,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
 
         if sensor_type == "INA219":
 
-            ina = INA219(i2c, addr=INA_ADDRESSES[cell])
+            ina = INA219(i2c, addr=ina_addresses[cell])
 
             ina.gain = Gain.DIV_1_40MV
             ina.shunt_resistance = 0.1
@@ -97,7 +97,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
         elif sensor_type == "INA226":
 
             ina = INA226(
-                address=INA_ADDRESSES[cell],
+                address=ina_addresses[cell],
                 bus=1,
                 shunt_resistance=0.1,
                 max_expected_current=0.8
@@ -112,7 +112,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
 
         print(
             f"{sensor_type} initialized at "
-            f"0x{INA_ADDRESSES[cell]:02X}"
+            f"0x{ina_addresses[cell]:02X}"
         )
 
     return ina_devices
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     voltage_buffer = []
     current_buffer = []
 
-    ina_devices = initialize_ina_devices(sensor_type, cells=cells, INA216_ADDRESSES)
+    ina_devices = initialize_ina_devices(sensor_type, cells, INA216_ADDRESSES)
 
 
     for i in range(cells):
