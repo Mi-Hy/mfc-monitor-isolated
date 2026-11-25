@@ -58,6 +58,8 @@ sudo python3 -m pip install influxdb_client --break-system-packages
 sudo python3 -m pip install flask --break-system-packages
 sudo python3 -m pip install psutil --break-system-packages
 sudo python3 -m pip install pyserial --break-system-packages
+sudo python3 -m pip install adafruit-circuitpython-mcp4725 --break-system-packages
+sudo python3 -m pip install adafruit-circuitpython-ina219 --break-system-packages
 ``` 
 ### 7️⃣ Test all individual scripts
 1. Test `system.py`
