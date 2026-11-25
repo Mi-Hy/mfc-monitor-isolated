@@ -8,6 +8,7 @@ from filelock import FileLock
 from lib.influxdb import *
 from lib.configuration import *
 from lib.sensors import *
+from lib.i2c_manager import *
 
 import socket
 import threading
@@ -146,65 +147,95 @@ def update_automations(config):
 def check_sensor_functions(config):
     # pH
     if config.get("sensor_requests", {}).get("ph_cal_req_status", 0) == 1:
+        connect_water_quality_sensors()
         ph_cal()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ph_cal_req_status", 0)
 
     if config.get("sensor_requests", {}).get("ph_cal_req_clear", 0) == 1:
+        connect_water_quality_sensors()
         ph_cal_clear()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
 
     if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
+        connect_water_quality_sensors()
         ph_cal_low()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
 
     if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
+        connect_water_quality_sensors()
         ph_cal_mid()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
 
     if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
+        connect_water_quality_sensors()
         ph_cal_high()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ph_cal_req_high10", 0)
 
     # Dissolved Oxygen (DO)
     if config.get("sensor_requests", {}).get("do_cal_req_status", 0) == 1:
+        connect_water_quality_sensors()
         do_cal()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "do_cal_req_status", 0)
 
     if config.get("sensor_requests", {}).get("do_cal_req_clear", 0) == 1:
+        connect_water_quality_sensors()
         do_cal_clear()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "do_cal_req_clear", 0)
 
     if config.get("sensor_requests", {}).get("do_cal_req_aol", 0) == 1:
+        connect_water_quality_sensors()
         do_cal_aol()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "do_cal_req_aol", 0)
 
     if config.get("sensor_requests", {}).get("do_cal_req_null", 0) == 1:
+        connect_water_quality_sensors()
         do_cal_null()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "do_cal_req_null", 0)
 
     # Electrical Conductivity (EC)
     if config.get("sensor_requests", {}).get("ec_cal_req_status", 0) == 1:
+        connect_water_quality_sensors()
         ec_cal()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ec_cal_req_status", 0)
 
     if config.get("sensor_requests", {}).get("ec_cal_req_clear", 0) == 1:
+        connect_water_quality_sensors()
         ec_cal_clear()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ec_cal_req_clear", 0)
 
     if config.get("sensor_requests", {}).get("ec_cal_req_dry", 0) == 1:
+        connect_water_quality_sensors()
         ec_cal_dry()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ec_cal_req_dry", 0)
 
     if config.get("sensor_requests", {}).get("ec_cal_req_one", 0) == 1:
+        connect_water_quality_sensors()
         ec_cal_one()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ec_cal_req_one", 0)
 
     if config.get("sensor_requests", {}).get("ec_cal_req_low", 0) == 1:
+        connect_water_quality_sensors()
         ec_cal_low()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ec_cal_req_low", 0)
 
     if config.get("sensor_requests", {}).get("ec_cal_req_high", 0) == 1:
+        connect_water_quality_sensors()
         ec_cal_high()
+        disconnect_water_quality_sensors()
         update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
 
     # # EC calibration values
@@ -230,7 +261,7 @@ def main_loop():
 
     #   Load YAML config file
     config = retrieve_yaml_file()
-    
+
     #   Init auto measurement settings
     update_system_timer_settings(config["timer_settings"])
     update_voltage_timer_settings(config["timer_settings"])

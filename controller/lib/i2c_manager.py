@@ -39,3 +39,16 @@ def pca9548_enable_all():
     """Schakel alle PCA9548A kanalen in."""
     with SMBus(I2C_BUS) as bus:
         bus.write_byte(PCA9548_ADDRESS, 0xFF)
+
+def connect_water_quality_sensors():
+    """Connect water quality sensors to the I2C bus."""        
+    # Disable PCA9548 multiplexer to avoid I2C conflicts with water quality sensors
+    pca9548_disable()
+
+    # Connect water quality sensors to the I2C bus
+    gpio4_high()
+
+def disconnect_water_quality_sensors():
+    """Disconnect water quality sensors from the I2C bus."""
+    # Disconnect water quality sensors from the I2C bus
+    gpio4_low()
