@@ -92,6 +92,8 @@ def update_cv_load(config=cv_load):
                 f"{voltage:.3f} V (DAC: {value})"
             )
 
+            pca9548_disable()
+
         except Exception as e:
             print(
                 f"[CV LOAD] ERROR channel {channel}: {e}"
