@@ -11,6 +11,7 @@ from lib.ds18b20 import *
 # from lib.socket_helper import *
 # from atlas_scientific.poll import *
 from lib.sensors import *
+from lib.gpio_helper import *
 
 def get_cpu_temp():
     try:
@@ -54,11 +55,16 @@ if __name__ == "__main__":
         "temp": ds18b20[0],
     }
 
+    # Connect I2C
+    gpio4_high()
+
     if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
         water_quality = read_all_once()
     else:
         water_quality = read_all_once_temp_compensated()
 
+    # Disconnect I2C
+    gpio4_low()
 
     print("System data:", system_data)
     print("Temperature data:", temperature_data)
