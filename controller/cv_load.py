@@ -2,8 +2,6 @@
 import time
 import board
 import busio
-import adafruit_mcp4725
-
 from lib.i2c_manager import *
 
 
@@ -23,9 +21,9 @@ cv_load = {
     "c8_voltage": 5.0,
 }
 
-I2C_ADDRESS = 0x61
 VREF = 5.45
 INACTIVE_VOLTAGE = 5.0
+MCP4725_ADDRESS = 0x61
 
 
 # ============================================================
@@ -39,19 +37,38 @@ i2c = busio.I2C(board.SCL, board.SDA)
 # DAC functie
 # ============================================================
 
-def set_voltage(dac, voltage):
-    """
-    Stel de uitgangsspanning van een MCP4725 in.
-    Resolutie: 12 bit (0-4095).
-    """
+# def set_voltage(dac, voltage):
+#     """
+#     Stel de uitgangsspanning van een MCP4725 in.
+#     Resolutie: 12 bit (0-4095).
+#     """
 
-    voltage = max(0.0, min(voltage, VREF))
+#     voltage = max(0.0, min(voltage, VREF))
+#     value = int((voltage / VREF) * 4095)
+
+#     dac.raw_value = value
+
+#     return value
+
+
+def set_voltage(bus, voltage):
+    if not 0 <= voltage <= VREF:
+        raise ValueError(f"Voltage must be between 0 and {VREF} V")
+
+    # Omzetten naar 12-bit DAC-waarde
     value = int((voltage / VREF) * 4095)
 
-    dac.raw_value = value
+    # MCP4725 Fast Mode Write
+    data_high = (value >> 8) & 0x0F
+    data_low = value & 0xFF
 
-    return value
+    bus.write_i2c_block_data(
+        MCP4725_ADDRESS,
+        data_high,
+        [data_low]
+    )
 
+    print(f"DAC ingesteld: {voltage:.3f} V (raw={value})")
 
 # ============================================================
 # CV Load aansturen
