@@ -11,7 +11,7 @@ from lib.ds18b20 import *
 # from lib.socket_helper import *
 # from atlas_scientific.poll import *
 from lib.sensors import *
-from lib.gpio_helper import *
+from lib.i2c_manager import *
 
 def get_cpu_temp():
     try:
@@ -55,7 +55,10 @@ if __name__ == "__main__":
         "temp": ds18b20[0],
     }
 
-    # Connect I2C
+    # Disable PCA9548 multiplexer to avoid I2C conflicts with water quality sensors
+    pca9548_disable()
+    
+    # Connect water quality sensors to the I2C bus
     gpio4_high()
 
     if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     else:
         water_quality = read_all_once_temp_compensated()
 
-    # Disconnect I2C
+    # Disconnect water quality sensors from the I2C bus
     gpio4_low()
 
     print("System data:", system_data)
