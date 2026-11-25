@@ -76,7 +76,7 @@ def update_cv_load(config=cv_load):
             # Selecteer PCA9548A kanaal
             pca9548_select(channel)
 
-            time.sleep(0.1)  # Wacht even voor stabiliteit
+            time.sleep(0.2)  # Wacht even voor stabiliteit
 
             # Initialiseer DAC op geselecteerd kanaal
             dac = adafruit_mcp4725.MCP4725(
@@ -87,12 +87,16 @@ def update_cv_load(config=cv_load):
             # Stel DAC-spanning in
             value = set_voltage(dac, voltage)
 
+            time.sleep(0.2)  # Wacht even voor stabiliteit
+
             print(
                 f"[CV LOAD] Channel {channel}: "
                 f"{voltage:.3f} V (DAC: {value})"
             )
 
             pca9548_disable()
+
+            time.sleep(0.2)  # Wacht even voor stabiliteit
 
         except Exception as e:
             print(
