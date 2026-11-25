@@ -8,7 +8,7 @@ automations:
   auto_volt_poll: 1
   update: 0
 fixed_configurations:
-  device_name: MFC01
+  device_name: MFC02
   firmware_version: v0.0.1
   sensor_type: INA226
   cells: 1
