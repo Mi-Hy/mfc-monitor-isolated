@@ -96,13 +96,13 @@ def update_cv_load(config=cv_load):
             time.sleep(0.2)  # Wacht even voor stabiliteit
 
             # Initialiseer DAC op geselecteerd kanaal
-            dac = adafruit_mcp4725.MCP4725(
-                i2c,
-                address=I2C_ADDRESS
-            )
+            # dac = adafruit_mcp4725.MCP4725(
+            #     i2c,
+            #     address=I2C_ADDRESS
+            # )
 
             # Stel DAC-spanning in
-            value = set_voltage(dac, voltage)
+            value = set_voltage(MCP4725_ADDRESS, voltage)
 
             time.sleep(0.2)  # Wacht even voor stabiliteit
 
