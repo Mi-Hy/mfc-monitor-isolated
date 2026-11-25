@@ -20,19 +20,23 @@ def gpio4_low():
 
 
 def pca9548_select(channel):
-    """
-    Selecteer exact één PCA9548A-kanaal (0-7).
-    Schakelt eerst alle andere kanalen uit.
-    """
     if not 0 <= channel <= 7:
         raise ValueError("Channel must be between 0 and 7")
 
     with SMBus(I2C_BUS) as bus:
-        # Eerst alle kanalen uitschakelen
+        # Alle kanalen uitschakelen
         bus.write_byte(PCA9548_ADDRESS, 0x00)
 
         # Enkel het gewenste kanaal activeren
         bus.write_byte(PCA9548_ADDRESS, 1 << channel)
+
+        # Controleer de ingestelde kanaalstatus
+        value = bus.read_byte(PCA9548_ADDRESS)
+
+        if value != (1 << channel):
+            raise RuntimeError(
+                f"PCA9548A channel selection failed: 0x{value:02X}"
+            )
 
 
 def pca9548_disable():
