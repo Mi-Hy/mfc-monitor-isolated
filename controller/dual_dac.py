@@ -8,7 +8,7 @@ import adafruit_mcp4725
 i2c = busio.I2C(board.SCL, board.SDA)
 
 # Beide MCP4725 DAC's initialiseren
-dac_1 = adafruit_mcp4725.MCP4725(i2c, address=0x60)
+# dac_1 = adafruit_mcp4725.MCP4725(i2c, address=0x60)
 dac_2 = adafruit_mcp4725.MCP4725(i2c, address=0x61)
 
 # Referentiespanning (VDD van de DAC)
