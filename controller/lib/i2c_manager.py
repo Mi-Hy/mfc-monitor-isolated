@@ -21,7 +21,7 @@ def gpio4_low():
 
 # PCA9548A functies
 def pca9548_select(channel):
-    
+
     pca9548_disable()
 
     """Selecteer een kanaal van de PCA9548A (0-7)."""
@@ -55,5 +55,3 @@ def disconnect_water_quality_sensors():
     """Disconnect water quality sensors from the I2C bus."""
     # Disconnect water quality sensors from the I2C bus
     gpio4_low()
-
-pca9548_disable()
