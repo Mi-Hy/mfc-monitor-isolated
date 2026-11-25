@@ -52,3 +52,5 @@ def disconnect_water_quality_sensors():
     """Disconnect water quality sensors from the I2C bus."""
     # Disconnect water quality sensors from the I2C bus
     gpio4_low()
+
+pca9548_disable()
