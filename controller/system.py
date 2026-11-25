@@ -55,19 +55,16 @@ if __name__ == "__main__":
         "temp": ds18b20[0],
     }
 
-    # Disable PCA9548 multiplexer to avoid I2C conflicts with water quality sensors
-    pca9548_disable()
-    
-    # Connect water quality sensors to the I2C bus
-    gpio4_high()
+    # Avoid conflicts with other I2C devices by disconnecting the water quality sensors before reading INA219 and INA226 sensors
+    connect_water_quality_sensors()
 
     if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
         water_quality = read_all_once()
     else:
         water_quality = read_all_once_temp_compensated()
 
-    # Disconnect water quality sensors from the I2C bus
-    gpio4_low()
+    # Allow other I2C devices to be used again by disconnecting the water quality sensors
+    disconnect_water_quality_sensors()
 
     print("System data:", system_data)
     print("Temperature data:", temperature_data)
