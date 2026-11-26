@@ -97,11 +97,17 @@ def update_cv_load(config=cv_load):
                 # Select the PCA9548A channel
                 pca9548_select(bus, channel)
 
+                time.sleep(0.2)  # Wait a bit for stability
+
                 # Set the voltage on the DAC for the selected channel
                 value = set_voltage(bus, voltage)
 
+                time.sleep(0.2) 
+
                 # Disable all channels after setting the voltage
                 pca9548_disable(bus)
+
+                time.sleep(0.2) 
 
                 print(
                     f"[CV LOAD] Channel {channel}: "
