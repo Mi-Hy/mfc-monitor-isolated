@@ -65,26 +65,33 @@ for address in INA219_ADDRESSES:
 
 if __name__ == "__main__":
 
-    # # Get config file
-    # config = retrieve_yaml_file()
+    # # # Get config file
+    # # config = retrieve_yaml_file()
 
-    # while config['activity']['load'] == 1:
+    # # while config['activity']['load'] == 1:
 
-    #     print("[Voltage] ⏳ Waiting for load test to complete...")
+    # #     print("[Voltage] ⏳ Waiting for load test to complete...")
 
-    #     time.sleep(5)
+    # #     time.sleep(5)
 
-    #     config = retrieve_yaml_file()
+    # #     config = retrieve_yaml_file()
 
-    # Check first if alle others script are not running, if they are running, wait until they are finished
-    for i in range (config["activity"]):
-        if config["activity"][f"script_{i}"] == 1:
-            print(f"[Voltage] ⏳ Waiting for script_{i} to complete...")
-            while config["activity"][f"script_{i}"] == 1:
-                time.sleep(5)
-                config = retrieve_yaml_file()
-            print(f"[Voltage] ✅ script_{i} completed.")
+    # # Check first if alle others script are not running, if they are running, wait until they are finished
+    # for i in range (config["activity"]):
+    #     if config["activity"][f"script_{i}"] == 1:
+    #         print(f"[Voltage] ⏳ Waiting for script_{i} to complete...")
+    #         while config["activity"][f"script_{i}"] == 1:
+    #             time.sleep(5)
+    #             config = retrieve_yaml_file()
+    #         print(f"[Voltage] ✅ script_{i} completed.")
 
+    
+    # # while config['activity']['load'] == 1:
+
+    # Get activity status from config file
+    while get_activity_status() == 1:
+        time.sleep(1)
+        print("[Voltage] ⏳ Waiting for other scripts to complete...")
 
     # Update config file to indicate voltage test is running
     update_yaml_flag("activity", "voltage", 1)
