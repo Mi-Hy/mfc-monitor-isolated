@@ -1,25 +1,9 @@
-import RPi.GPIO as GPIO
 from smbus2 import SMBus
-
-# GPIO configuratie
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
-# GPIO.setup(4, GPIO.OUT, initial=GPIO.LOW)
+from lib.gpio import gpio4_high, gpio4_low
 
 # PCA9548A configuratie
 I2C_BUS = 1
 PCA9548_ADDRESS = 0x70
-
-# GPIO4
-def gpio4_high():
-    GPIO.setup(4, GPIO.OUT)
-    GPIO.output(4, GPIO.HIGH)
-
-def gpio4_low():
-    GPIO.setup(4, GPIO.OUT)
-    GPIO.output(4, GPIO.LOW)
-
 
 def pca9548_select(bus, channel):
     if not 0 <= channel <= 7:
