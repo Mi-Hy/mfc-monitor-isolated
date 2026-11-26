@@ -70,9 +70,9 @@ if __name__ == "__main__":
         connect_water_quality_sensors(bus)
 
         if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
-            water_quality = read_all_once()
+            water_quality = read_all_once(bus)
         else:
-            water_quality = read_all_once_temp_compensated()
+            water_quality = read_all_once_temp_compensated(bus)
 
         if water_quality is None:
             water_quality = {
