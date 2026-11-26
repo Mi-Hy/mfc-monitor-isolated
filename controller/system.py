@@ -65,25 +65,35 @@ if __name__ == "__main__":
         "temp": ds18b20[0],
     }
 
-    with SMBus(I2C_BUS) as bus:
-        # Avoid conflicts with other I2C devices by disconnecting the water quality sensors before reading INA219 and INA226 sensors
-        connect_water_quality_sensors(bus)
+    try:
+        with SMBus(I2C_BUS) as bus:
+            try:
+                # Avoid conflicts with other I2C devices by disconnecting the water quality sensors before reading INA219 and INA226 sensors
+                connect_water_quality_sensors(bus)
 
-        if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
-            water_quality = read_all_once(bus)
-        else:
-            water_quality = read_all_once_temp_compensated(bus)
+                if config.get("sensor_configurations", {}).get("temp_compensation", 0) == 0:
+                    water_quality = read_all_once(bus)
+                else:
+                    water_quality = read_all_once_temp_compensated(bus)
 
-        if water_quality is None:
-            water_quality = {
-                "ph": 0,
-                "ec": 0,
-                "do": 0,
-                "orp": 0
-            }
-
-        # Allow other I2C devices to be used again by disconnecting the water quality sensors
-        disconnect_water_quality_sensors()
+                if water_quality is None:
+                    water_quality = {
+                        "ph": 0,
+                        "ec": 0,
+                        "do": 0,
+                        "orp": 0
+                    }
+            finally:
+                # Allow other I2C devices to be used again by disconnecting the water quality sensors
+                disconnect_water_quality_sensors()
+    except Exception as e:
+        print(f"Fout bij uitlezen van waterkwaliteitssensoren: {e}")
+        water_quality = {
+            "ph": 0,
+            "ec": 0,
+            "do": 0,
+            "orp": 0
+        }
 
     print("System data:", system_data)
     print("Temperature data:", temperature_data)
