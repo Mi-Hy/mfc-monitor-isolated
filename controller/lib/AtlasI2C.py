@@ -178,7 +178,8 @@ class AtlasI2C:
         '''
         prev_addr = copy.deepcopy(self._address)
         i2c_devices = []
-        for i in range(0, 128):
+        # for i in range(0, 128):
+        for i in range(96, 112):
             try:
                 self.set_i2c_address(i)
                 self.read(1)
