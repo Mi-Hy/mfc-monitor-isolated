@@ -73,7 +73,7 @@ if __name__ == "__main__":
             }
 
         # Allow other I2C devices to be used again by disconnecting the water quality sensors
-        disconnect_water_quality_sensors(bus)
+        disconnect_water_quality_sensors()
 
     print("System data:", system_data)
     print("Temperature data:", temperature_data)
