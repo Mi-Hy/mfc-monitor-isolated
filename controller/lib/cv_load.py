@@ -21,7 +21,7 @@ cv_load = {
     "c8_voltage": 5.0,
 }
 
-VREF = 5.45
+VREF = 5.25
 INACTIVE_VOLTAGE = 5.0
 MCP4725_ADDRESS = 0x61
 
