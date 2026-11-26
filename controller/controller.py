@@ -11,7 +11,7 @@ from lib.sensors import *
 from lib.cv_load import *
 from lib.gpio import *
 
-import sockets
+import socket
 import threading
 import json
 
