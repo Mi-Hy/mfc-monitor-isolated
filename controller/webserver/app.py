@@ -73,8 +73,7 @@ def index():
     config = retrieve_yaml_file()
     print(config)
 
-    return render_template('index6.html', config=config)
-
+    return render_template('index7.html', config=config)
 
 
 camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
