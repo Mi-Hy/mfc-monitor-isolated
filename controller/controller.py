@@ -263,6 +263,8 @@ def check_cv_load_settings(config):
     # Check if CV Load settings have changed and if no other script is running
     if config.get("cv_load", {}).get("update", 0) == 1:
 
+        print("There is an update in the CV Load settings. Checking if any other script is running...")
+
         if get_activity_status() == 0:
 
             print("CV Load settings changed!")
