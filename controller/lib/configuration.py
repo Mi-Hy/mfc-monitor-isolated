@@ -65,3 +65,18 @@ def get_activity_status():
     except Exception as e:
         print(f"⚠️ Error occurred: {e}")
         return 1
+
+
+def get_sensor_req_status():
+    try:
+        config = retrieve_yaml_file()
+        requests = (config or {}).get("sensor_requests") or {}
+
+        for key, value in requests.items():
+            if "req" in key and value == 1:
+                return 1
+
+        return 0
+    except Exception as e:
+        print(f"⚠️ Error occurred: {e}")
+        return 0
