@@ -63,6 +63,14 @@ if __name__ == "__main__":
     else:
         water_quality = read_all_once_temp_compensated()
 
+    if water_quality is None:
+        water_quality = {
+            "ph": 0,
+            "ec": 0,
+            "do": 0,
+            "orp": 0
+        }
+
     # Allow other I2C devices to be used again by disconnecting the water quality sensors
     disconnect_water_quality_sensors()
 

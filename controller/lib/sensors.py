@@ -50,12 +50,10 @@ def parse_sensor_data(read_output):
 def read_all_once():
     """Voert één poll uit voor alle aangesloten sensoren, print het resultaat en sluit af."""
     devices = get_devices()
-
-    # print([dev.address for dev in devices])
     
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
-        sys.exit(1)
+        return None
 
     # Bepaal de langste vereiste wachttijd van de aangesloten apparaten
     delay_time = max(dev.long_timeout for dev in devices)
@@ -79,13 +77,8 @@ def read_all_once():
         if sensor_type is not None:
             sensor_data[sensor_type] = val
 
-    # print(sensor_data)
 
     return sensor_data
-
-    # 4. Sluit het script af
-    # sys.exit(0)
-
 
 
 def read_all_once_temp_compensated():
@@ -96,7 +89,7 @@ def read_all_once_temp_compensated():
 
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
-        sys.exit(1)
+        return None
 
     # Zoek de RTD-sensor
     rtd_devices = [dev.address for dev in devices]
