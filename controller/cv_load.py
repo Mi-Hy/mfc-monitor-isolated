@@ -75,56 +75,97 @@ def set_voltage(bus, voltage):
 # ============================================================
 
 def update_cv_load(config=cv_load):
+    with SMBus(I2C_BUS) as bus:
 
-    active = bool(config.get("active", 0))
+        # Check if the constant voltage load is activated
+        active = bool(config.get("active", 0))
+        print(f"\n[CV LOAD] Active: {active}")
 
-    print(f"\n[CV LOAD] Active: {active}")
+        # Sweep over all 8 channels
+        for channel in range(8):
 
-    for channel in range(8):
+            # Convert to channel name
+            channel_name = f"c{channel + 1}_voltage"
 
-        channel_name = f"c{channel + 1}_voltage"
+            # Determine the voltage to set based on the active status
+            if active:
+                voltage = float(config.get(channel_name, 0.3))
+            else:
+                voltage = INACTIVE_VOLTAGE
 
-        if active:
-            voltage = float(config.get(channel_name, 0.3))
-        else:
-            voltage = INACTIVE_VOLTAGE
+            try:
+                # Select the PCA9548A channel
+                pca9548_select(bus, channel)
 
-        try:
-            # Selecteer PCA9548A kanaal
-            pca9548_select(channel)
+                # Set the voltage on the DAC for the selected channel
+                value = set_voltage(bus, voltage)
 
-            time.sleep(0.2)  # Wacht even voor stabiliteit
+                # Disable all channels after setting the voltage
+                pca9548_disable()
 
-            # Initialiseer DAC op geselecteerd kanaal
-            # dac = adafruit_mcp4725.MCP4725(
-            #     i2c,
-            #     address=I2C_ADDRESS
-            # )
+                print(
+                    f"[CV LOAD] Channel {channel}: "
+                    f"{voltage:.3f} V (DAC: {value})"
+                )
 
-            # Stel DAC-spanning in
-            value = set_voltage(MCP4725_ADDRESS, voltage)
+            except Exception as e:
+                print(
+                    f"[CV LOAD] ERROR channel {channel}: {e}"
+                )
 
-            time.sleep(0.2)  # Wacht even voor stabiliteit
 
-            print(
-                f"[CV LOAD] Channel {channel}: "
-                f"{voltage:.3f} V (DAC: {value})"
-            )
 
-            pca9548_disable()
+# def update_cv_load(config=cv_load):
 
-            time.sleep(0.2)  # Wacht even voor stabiliteit
+#     active = bool(config.get("active", 0))
 
-        except Exception as e:
-            print(
-                f"[CV LOAD] ERROR channel {channel}: {e}"
-            )
+#     print(f"\n[CV LOAD] Active: {active}")
 
-    # Schakel alle PCA9548A kanalen uit
-    try:
-        pca9548_disable()
-    except Exception as e:
-        print(f"[CV LOAD] Multiplexer disable error: {e}")
+#     for channel in range(8):
+
+#         channel_name = f"c{channel + 1}_voltage"
+
+#         if active:
+#             voltage = float(config.get(channel_name, 0.3))
+#         else:
+#             voltage = INACTIVE_VOLTAGE
+
+#         try:
+#             # Selecteer PCA9548A kanaal
+#             pca9548_select(channel)
+
+#             time.sleep(0.2)  # Wacht even voor stabiliteit
+
+#             # Initialiseer DAC op geselecteerd kanaal
+#             # dac = adafruit_mcp4725.MCP4725(
+#             #     i2c,
+#             #     address=I2C_ADDRESS
+#             # )
+
+#             # Stel DAC-spanning in
+#             value = set_voltage(MCP4725_ADDRESS, voltage)
+
+#             time.sleep(0.2)  # Wacht even voor stabiliteit
+
+#             print(
+#                 f"[CV LOAD] Channel {channel}: "
+#                 f"{voltage:.3f} V (DAC: {value})"
+#             )
+
+#             pca9548_disable()
+
+#             time.sleep(0.2)  # Wacht even voor stabiliteit
+
+#         except Exception as e:
+#             print(
+#                 f"[CV LOAD] ERROR channel {channel}: {e}"
+#             )
+
+#     # Schakel alle PCA9548A kanalen uit
+#     try:
+#         pca9548_disable()
+#     except Exception as e:
+#         print(f"[CV LOAD] Multiplexer disable error: {e}")
 
 
 # ============================================================
