@@ -73,7 +73,7 @@ def index():
     config = retrieve_yaml_file()
     print(config)
 
-    return render_template('index5.html', config=config)
+    return render_template('index6.html', config=config)
 
 
 
