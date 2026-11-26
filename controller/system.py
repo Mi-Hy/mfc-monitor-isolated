@@ -34,6 +34,9 @@ def get_disk_usage():
 
 if __name__ == "__main__":
 
+    # Get config file
+    config = retrieve_yaml_file()
+
     # Get activity status from config file
     while get_activity_status() == 1:
         time.sleep(1)

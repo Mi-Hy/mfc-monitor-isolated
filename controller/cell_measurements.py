@@ -65,8 +65,8 @@ for address in INA219_ADDRESSES:
 
 if __name__ == "__main__":
 
-    # # # Get config file
-    # # config = retrieve_yaml_file()
+    # Get config file
+    config = retrieve_yaml_file()
 
     # # while config['activity']['load'] == 1:
 
