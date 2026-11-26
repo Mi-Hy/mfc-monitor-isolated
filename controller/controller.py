@@ -154,7 +154,7 @@ def check_sensor_functions(config):
         i2c_manager = importlib.import_module("lib.i2c_manager")
 
         # Get activity status from config file
-        while get_activity_status() == 1:
+        while get_activity_status(ignore="atlas_sensor_calibration") == 1:
             time.sleep(1)
             print("[System] ⏳ Waiting for other scripts to complete...")
 
