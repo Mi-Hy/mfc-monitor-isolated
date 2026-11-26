@@ -59,6 +59,8 @@ def get_activity_status():
 
         for key in activity:
             if activity[key] == 1:
+                script_name = os.path.basename(__file__)
+                print(f"⚠️ Activity active: script={script_name}, key={key}, value={value}")
                 return 1
 
         return 0
