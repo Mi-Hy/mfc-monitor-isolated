@@ -5,7 +5,7 @@ import board
 from adafruit_ina219 import INA219, Gain
 
 from lib.influxdb import *
-from lib.denkovi_relay import *
+# from lib.denkovi_relay import *
 from lib.configuration import *
 
 import RPi.GPIO as GPIO

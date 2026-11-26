@@ -1,6 +1,6 @@
-from lib.ep_handler import *
+from archive.ep_handler import *
 from lib.influxdb import *
-from lib.tca9554 import TCA9554
+from archive.tca9554 import TCA9554
 from lib.configuration import *
 import time
 
