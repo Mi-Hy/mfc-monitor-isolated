@@ -145,6 +145,7 @@ def update_automations(config):
         load_scheduler.stop()   
 
 def check_sensor_functions(config):
+    None
 
     # if config.get("sensor_requests", {}).get("update", 0) == 1:
 
