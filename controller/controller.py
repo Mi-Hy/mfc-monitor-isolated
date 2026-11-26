@@ -225,6 +225,9 @@ def check_sensor_functions(config):
                 ec_cal_high(bus)
                 update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
 
+            # Disconnect water quality sensors to avoid conflicts with other I2C devices
+            disconnect_water_quality_sensors()
+
     # Disable update flag
     if get_sensor_req_status() == 0:
         # Update flag in config file
@@ -232,9 +235,6 @@ def check_sensor_functions(config):
 
         # Disable activity flag
         update_yaml_flag("activity", "atlas_sensor_calibration", 0)       
-
-    # Disconnect water quality sensors to avoid conflicts with other I2C devices
-    disconnect_water_quality_sensors()
 
 def check_cv_load_settings(config):
 
