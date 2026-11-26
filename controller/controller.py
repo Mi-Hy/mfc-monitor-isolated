@@ -9,8 +9,9 @@ from lib.influxdb import *
 from lib.configuration import *
 from lib.sensors import *
 from lib.cv_load import *
+from lib.gpio import *
 
-import socket
+import sockets
 import threading
 import json
 
@@ -145,100 +146,99 @@ def update_automations(config):
         load_scheduler.stop()   
 
 def check_sensor_functions(config):
-    None
 
-    # if config.get("sensor_requests", {}).get("update", 0) == 1:
+    if config.get("sensor_requests", {}).get("update", 0) == 1:
 
-    #     # from lib.i2c_manager import *
-    #     import importlib
-    #     i2c_manager = importlib.import_module("lib.i2c_manager")
+        # from lib.i2c_manager import *
+        import importlib
+        i2c_manager = importlib.import_module("lib.i2c_manager")
 
-    #     # Get activity status from config file
-    #     while get_activity_status() == 1:
-    #         time.sleep(1)
-    #         print("[System] ⏳ Waiting for other scripts to complete...")
+        # Get activity status from config file
+        while get_activity_status() == 1:
+            time.sleep(1)
+            print("[System] ⏳ Waiting for other scripts to complete...")
 
-    #     # Update config file to indicate atlas sensor calibration is running
-    #     update_yaml_flag("activity", "atlas_sensor_calibration", 1)
+        # Update config file to indicate atlas sensor calibration is running
+        update_yaml_flag("activity", "atlas_sensor_calibration", 1)
 
 
-    #     with SMBus(I2C_BUS) as bus:
+        with SMBus(I2C_BUS) as bus:
 
-    #         connect_water_quality_sensors(bus)
+            connect_water_quality_sensors(bus)
 
-    #         # pH
-    #         if config.get("sensor_requests", {}).get("ph_cal_req_status", 0) == 1:
-    #             ph_cal(bus)
-    #             update_yaml_flag("sensor_requests", "ph_cal_req_status", 0)
+            # pH
+            if config.get("sensor_requests", {}).get("ph_cal_req_status", 0) == 1:
+                ph_cal(bus)
+                update_yaml_flag("sensor_requests", "ph_cal_req_status", 0)
 
-    #         if config.get("sensor_requests", {}).get("ph_cal_req_clear", 0) == 1:
-    #             ph_cal_clear(bus)
-    #             update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
+            if config.get("sensor_requests", {}).get("ph_cal_req_clear", 0) == 1:
+                ph_cal_clear(bus)
+                update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
 
-    #         if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
-    #             ph_cal_low(bus)
-    #             update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
+            if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
+                ph_cal_low(bus)
+                update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
 
-    #         if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
-    #             ph_cal_mid(bus)
-    #             update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
+            if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
+                ph_cal_mid(bus)
+                update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
 
-    #         if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
-    #             ph_cal_high(bus)
-    #             update_yaml_flag("sensor_requests", "ph_cal_req_high10", 0)
+            if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
+                ph_cal_high(bus)
+                update_yaml_flag("sensor_requests", "ph_cal_req_high10", 0)
 
-    #         # Dissolved Oxygen (DO)
-    #         if config.get("sensor_requests", {}).get("do_cal_req_status", 0) == 1:
-    #             do_cal(bus)
-    #             update_yaml_flag("sensor_requests", "do_cal_req_status", 0)
+            # Dissolved Oxygen (DO)
+            if config.get("sensor_requests", {}).get("do_cal_req_status", 0) == 1:
+                do_cal(bus)
+                update_yaml_flag("sensor_requests", "do_cal_req_status", 0)
 
-    #         if config.get("sensor_requests", {}).get("do_cal_req_clear", 0) == 1:
-    #             do_cal_clear(bus)
-    #             update_yaml_flag("sensor_requests", "do_cal_req_clear", 0)
+            if config.get("sensor_requests", {}).get("do_cal_req_clear", 0) == 1:
+                do_cal_clear(bus)
+                update_yaml_flag("sensor_requests", "do_cal_req_clear", 0)
 
-    #         if config.get("sensor_requests", {}).get("do_cal_req_aol", 0) == 1:
-    #             do_cal_aol(bus)
-    #             update_yaml_flag("sensor_requests", "do_cal_req_aol", 0)
+            if config.get("sensor_requests", {}).get("do_cal_req_aol", 0) == 1:
+                do_cal_aol(bus)
+                update_yaml_flag("sensor_requests", "do_cal_req_aol", 0)
 
-    #         if config.get("sensor_requests", {}).get("do_cal_req_null", 0) == 1:
-    #             do_cal_null(bus)
-    #             update_yaml_flag("sensor_requests", "do_cal_req_null", 0)
+            if config.get("sensor_requests", {}).get("do_cal_req_null", 0) == 1:
+                do_cal_null(bus)
+                update_yaml_flag("sensor_requests", "do_cal_req_null", 0)
 
-    #         # Electrical Conductivity (EC)
-    #         if config.get("sensor_requests", {}).get("ec_cal_req_status", 0) == 1:
-    #             ec_cal(bus)
-    #             update_yaml_flag("sensor_requests", "ec_cal_req_status", 0)
+            # Electrical Conductivity (EC)
+            if config.get("sensor_requests", {}).get("ec_cal_req_status", 0) == 1:
+                ec_cal(bus)
+                update_yaml_flag("sensor_requests", "ec_cal_req_status", 0)
 
-    #         if config.get("sensor_requests", {}).get("ec_cal_req_clear", 0) == 1:
-    #             ec_cal_clear(bus)
-    #             update_yaml_flag("sensor_requests", "ec_cal_req_clear", 0)
+            if config.get("sensor_requests", {}).get("ec_cal_req_clear", 0) == 1:
+                ec_cal_clear(bus)
+                update_yaml_flag("sensor_requests", "ec_cal_req_clear", 0)
 
-    #         if config.get("sensor_requests", {}).get("ec_cal_req_dry", 0) == 1:
-    #             ec_cal_dry(bus)
-    #             update_yaml_flag("sensor_requests", "ec_cal_req_dry", 0)
+            if config.get("sensor_requests", {}).get("ec_cal_req_dry", 0) == 1:
+                ec_cal_dry(bus)
+                update_yaml_flag("sensor_requests", "ec_cal_req_dry", 0)
 
-    #         if config.get("sensor_requests", {}).get("ec_cal_req_one", 0) == 1:
-    #             ec_cal_one(bus)
-    #             update_yaml_flag("sensor_requests", "ec_cal_req_one", 0)
+            if config.get("sensor_requests", {}).get("ec_cal_req_one", 0) == 1:
+                ec_cal_one(bus)
+                update_yaml_flag("sensor_requests", "ec_cal_req_one", 0)
 
-    #         if config.get("sensor_requests", {}).get("ec_cal_req_low", 0) == 1:
-    #             ec_cal_low(bus)
-    #             update_yaml_flag("sensor_requests", "ec_cal_req_low", 0)
+            if config.get("sensor_requests", {}).get("ec_cal_req_low", 0) == 1:
+                ec_cal_low(bus)
+                update_yaml_flag("sensor_requests", "ec_cal_req_low", 0)
 
-    #         if config.get("sensor_requests", {}).get("ec_cal_req_high", 0) == 1:
-    #             ec_cal_high(bus)
-    #             update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
+            if config.get("sensor_requests", {}).get("ec_cal_req_high", 0) == 1:
+                ec_cal_high(bus)
+                update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
 
-    #         # Disconnect water quality sensors to avoid conflicts with other I2C devices
-    #         disconnect_water_quality_sensors()
+            # Disconnect water quality sensors to avoid conflicts with other I2C devices
+            disconnect_water_quality_sensors()
 
-    # # Disable update flag
-    # if get_sensor_req_status() == 0:
-    #     # Update flag in config file
-    #     update_yaml_flag("sensor_requests", "update", 0)
+    # Disable update flag
+    if get_sensor_req_status() == 0:
+        # Update flag in config file
+        update_yaml_flag("sensor_requests", "update", 0)
 
-    #     # Disable activity flag
-    #     update_yaml_flag("activity", "atlas_sensor_calibration", 0)       
+        # Disable activity flag
+        update_yaml_flag("activity", "atlas_sensor_calibration", 0)       
 
 def check_cv_load_settings(config):
 
