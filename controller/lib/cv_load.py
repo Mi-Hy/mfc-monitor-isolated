@@ -2,7 +2,7 @@
 import time
 import board
 import busio
-from lib.i2c_manager import *
+from lib.i2c_manager import pca9548_select,pca9548_disable
 
 
 # ============================================================
