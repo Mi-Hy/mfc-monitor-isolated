@@ -101,7 +101,7 @@ def update_cv_load(config=cv_load):
                 value = set_voltage(bus, voltage)
 
                 # Disable all channels after setting the voltage
-                pca9548_disable()
+                pca9548_disable(bus)
 
                 print(
                     f"[CV LOAD] Channel {channel}: "
