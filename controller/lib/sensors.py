@@ -9,7 +9,7 @@ from lib.configuration import *
 
 def get_devices(i2c_bus):
     """Detecteert automatisch alle geldige Atlas EZO I2C-apparaten."""
-    device = AtlasI2C(bus=i2c_bus)
+    device = AtlasI2C()
     device_address_list = device.list_i2c_devices()
     device_list = []
 
