@@ -87,7 +87,7 @@ if __name__ == "__main__":
                 # Allow other I2C devices to be used again by disconnecting the water quality sensors
                 disconnect_water_quality_sensors()
     except Exception as e:
-        print(f"Fout bij uitlezen van waterkwaliteitssensoren: {e}")
+        print(f"Fault during water quality sensor reading: {e}")
         water_quality = {
             "ph": 0,
             "ec": 0,
