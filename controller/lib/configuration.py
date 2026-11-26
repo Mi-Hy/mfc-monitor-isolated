@@ -50,7 +50,7 @@ def update_yaml_flag(TAGlvl1, TAGlvl2, value):
 
 
 #   Function to check if any other script is running
-def get_activity_status():
+def get_activity_status(ignore=None):
     try:
         config = retrieve_yaml_file()
 
@@ -58,7 +58,7 @@ def get_activity_status():
         activity = (config or {}).get("activity") or {}
 
         for key, value in activity.items():
-            if value == 1:
+            if value == 1 and key != ignore:
                 script_name = os.path.basename(__file__)
                 print(f"⚠️ Activity active: script={script_name}, key={key}, value={value}")
                 return 1
