@@ -7,9 +7,9 @@ import re
 from lib.configuration import *
 
 
-def get_devices():
+def get_devices(i2c_bus):
     """Detecteert automatisch alle geldige Atlas EZO I2C-apparaten."""
-    device = AtlasI2C()
+    device = AtlasI2C(bus=i2c_bus)
     device_address_list = device.list_i2c_devices()
     device_list = []
 
@@ -47,9 +47,9 @@ def parse_sensor_data(read_output):
 
     return None, None
 
-def read_all_once():
+def read_all_once(bus):
     """Voert één poll uit voor alle aangesloten sensoren, print het resultaat en sluit af."""
-    devices = get_devices()
+    devices = get_devices(bus)
     
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
@@ -81,11 +81,11 @@ def read_all_once():
     return sensor_data
 
 
-def read_all_once_temp_compensated():
+def read_all_once_temp_compensated(bus):
     """Meet de temperatuur via RTD, stel temperatuurcompensatie in
     voor de andere sensoren en lees alle sensoren uit.
     """
-    devices = get_devices()
+    devices = get_devices(bus)
 
     if not devices:
         print("Geen Atlas Scientific EZO I2C-apparaten gevonden.")
@@ -148,8 +148,8 @@ def read_all_once_temp_compensated():
     return sensor_data
 
 
-def find_device(device_number):
-    devices = get_devices()
+def find_device(bus, device_number):
+    devices = get_devices(bus)
 
     if not devices:
         print("No Atlas Scientific EZO I2C-devices found!")
@@ -215,7 +215,7 @@ def find_device(device_number):
 #     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
 
 
-def ph_cal():
+def ph_cal(bus):
     print("[Sensors][PH] Checking calibration status...")
 
     # ph_device = find_device(99)
@@ -224,7 +224,7 @@ def ph_cal():
 
     # raw_output = ph_device.read()
 
-    ph_device = find_device(99)
+    ph_device = find_device(bus, 99)
 
     print(f"Device: {ph_device}")
     print(f"Address: {ph_device.address}")
@@ -258,9 +258,9 @@ def ph_cal():
     print(f"[Sensors][PH] Calibration status: {value}")
     update_yaml_flag("sensor_responses", "ph_cal_rsp_status", value)
 
-def ph_cal_clear():
+def ph_cal_clear(bus):
     print("[Sensors][PH] Clearing calibration...")
-    ph_device = find_device(99)
+    ph_device = find_device(bus, 99)
     ph_device.write("Cal,clear")
     time.sleep(ph_device.long_timeout)
 
@@ -272,9 +272,9 @@ def ph_cal_clear():
     return response
 
 
-def ph_cal_mid():
+def ph_cal_mid(bus):
     print("[Sensors][PH] Starting mid-point calibration (pH 7.00)...")
-    ph_device = find_device(99)
+    ph_device = find_device(bus, 99)
     ph_device.write("Cal,mid,7.00")
     time.sleep(ph_device.long_timeout)
 
@@ -286,9 +286,9 @@ def ph_cal_mid():
     return response
 
 
-def ph_cal_low():
+def ph_cal_low(bus):
     print("[Sensors][PH] Starting low-point calibration (pH 4.00)...")
-    ph_device = find_device(99)
+    ph_device = find_device(bus, 99)
     ph_device.write("Cal,low,4.00")
     time.sleep(ph_device.long_timeout)
 
@@ -300,9 +300,9 @@ def ph_cal_low():
     return response
 
 
-def ph_cal_high():
+def ph_cal_high(bus):
     print("[Sensors][PH] Starting high-point calibration (pH 10.00)...")
-    ph_device = find_device(99)
+    ph_device = find_device(bus, 99)
     ph_device.write("Cal,high,10.00")
     time.sleep(ph_device.long_timeout)
 
@@ -316,9 +316,9 @@ def ph_cal_high():
 
 # Dissolved Oxygen (DO)
 
-def do_cal():
+def do_cal(bus):
     print("[Sensors][DO] Checking calibration status...")
-    do_device = find_device(97)
+    do_device = find_device(bus, 97)
     do_device.write("Cal,?")
     time.sleep(do_device.long_timeout)
 
@@ -329,9 +329,9 @@ def do_cal():
     update_yaml_flag("sensor_responses", "do_cal_rsp_status", value)
 
 
-def do_cal_clear():
+def do_cal_clear(bus):
     print("[Sensors][DO] Clearing calibration...")
-    do_device = find_device(97)
+    do_device = find_device(bus, 97)
     do_device.write("Cal,clear")
     time.sleep(do_device.long_timeout)
 
@@ -342,9 +342,9 @@ def do_cal_clear():
     return response
 
 # calibrate to atmospheric oxygen levels
-def do_cal_aol():
+def do_cal_aol(bus):
     print("[Sensors][DO] Starting air calibration...")
-    do_device = find_device(97)
+    do_device = find_device(bus, 97)
     do_device.write("Cal")
     time.sleep(do_device.long_timeout)
 
@@ -355,9 +355,9 @@ def do_cal_aol():
     return response
 
 # calibrate device to 0 dissolved oxygen
-def do_cal_null():
+def do_cal_null(bus):
     print("[Sensors][DO] Starting zero oxygen calibration...")
-    do_device = find_device(97)
+    do_device = find_device(bus, 97)
     do_device.write("Cal,0")
     time.sleep(do_device.long_timeout)
 
@@ -370,9 +370,9 @@ def do_cal_null():
 
 # Electrical Conductivity (EC)
 
-def ec_cal():
+def ec_cal(bus):
     print("[Sensors][EC] Checking calibration status...")
-    ec_device = find_device(100)
+    ec_device = find_device(bus, 100)
     ec_device.write("Cal,?")
     time.sleep(ec_device.long_timeout)
 
@@ -383,9 +383,9 @@ def ec_cal():
     update_yaml_flag("sensor_responses", "ec_cal_rsp_status", value)
 
 
-def ec_cal_clear():
+def ec_cal_clear(bus):
     print("[Sensors][EC] Clearing calibration...")
-    ec_device = find_device(100)
+    ec_device = find_device(bus, 100)
     ec_device.write("Cal,clear")
     time.sleep(ec_device.long_timeout)
 
@@ -396,9 +396,9 @@ def ec_cal_clear():
     return response
 
 
-def ec_cal_dry():
+def ec_cal_dry(bus):
     print("[Sensors][EC] Starting dry calibration...")
-    ec_device = find_device(100)
+    ec_device = find_device(bus, 100)
     ec_device.write("Cal,dry")
     time.sleep(ec_device.long_timeout)
 
@@ -409,10 +409,10 @@ def ec_cal_dry():
     return response
 
 
-def ec_cal_one():
+def ec_cal_one(bus):
     value = get_ec_cal_value("ec_cal_value_one")
     print(f"[Sensors][EC] Starting one-point calibration ({value})...")
-    ec_device = find_device(100)
+    ec_device = find_device(bus, 100)
     ec_device.write(f"Cal,one,{value}")
     time.sleep(ec_device.long_timeout)
 
@@ -423,10 +423,10 @@ def ec_cal_one():
     return response
 
 
-def ec_cal_low():
+def ec_cal_low(bus):
     value = get_ec_cal_value("ec_cal_value_low")
     print(f"[Sensors][EC] Starting low-point calibration ({value})...")
-    ec_device = find_device(100)
+    ec_device = find_device(bus, 100)
     ec_device.write(f"Cal,low,{value}")
     time.sleep(ec_device.long_timeout)
 
@@ -437,10 +437,10 @@ def ec_cal_low():
     return response
 
 
-def ec_cal_high():
+def ec_cal_high(bus):
     value = get_ec_cal_value("ec_cal_value_high")
     print(f"[Sensors][EC] Starting high-point calibration ({value})...")
-    ec_device = find_device(100)
+    ec_device = find_device(bus, 100)
     ec_device.write(f"Cal,high,{value}")
     time.sleep(ec_device.long_timeout)
 
