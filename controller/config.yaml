@@ -2,6 +2,7 @@ activity:
   load: 0
   system: 0
   voltage: 0
+  adjusting_cv_load: 0
 automations:
   auto_load_poll: 0
   auto_sys_poll: 0
@@ -73,6 +74,7 @@ trigger:
   system: 0
   voltage: 0
 cv_load:
+  update: 0
   active: 1
   c1_voltage: 0.3
   c2_voltage: 0.3

@@ -56,23 +56,37 @@ for address in INA219_ADDRESSES:
     print(f"INA219 initialized at 0x{address:02X}")
 
 
+
+
+
 # -------------------------------------------------------------------------
 # Main
 # -------------------------------------------------------------------------
 
 if __name__ == "__main__":
 
-    # Get config file
-    config = retrieve_yaml_file()
+    # # Get config file
+    # config = retrieve_yaml_file()
 
-    while config['activity']['load'] == 1:
+    # while config['activity']['load'] == 1:
 
-        print("[Voltage] ⏳ Waiting for load test to complete...")
+    #     print("[Voltage] ⏳ Waiting for load test to complete...")
 
-        time.sleep(5)
+    #     time.sleep(5)
 
-        config = retrieve_yaml_file()
+    #     config = retrieve_yaml_file()
 
+    # Check first if alle others script are not running, if they are running, wait until they are finished
+    for i in range (config["activity"]):
+        if config["activity"][f"script_{i}"] == 1:
+            print(f"[Voltage] ⏳ Waiting for script_{i} to complete...")
+            while config["activity"][f"script_{i}"] == 1:
+                time.sleep(5)
+                config = retrieve_yaml_file()
+            print(f"[Voltage] ✅ script_{i} completed.")
+
+
+    # Update config file to indicate voltage test is running
     update_yaml_flag("activity", "voltage", 1)
 
     voltage_buffer = []
@@ -179,128 +193,58 @@ if __name__ == "__main__":
 
             current_buffer.append(0)
 
-        # buffer_voltages = []
-
-        # for _ in range(5):
-
-        #     try:
-
-        #         voltage = ina219.bus_voltage
-
-        #         # Convert V -> mV
-        #         voltage_mv = voltage * 1000
-
-        #         buffer_voltages.append(voltage_mv)
-
-        #     except Exception as e:
-
-        #         print(
-        #             f"[Cell {i + 1}] "
-        #             f"INA219 read error: {e}"
-        #         )
-
-        #     time.sleep(0.05)
-
-        # # -------------------------------------------------------------
-        # # Median of the 5 measurements
-        # # -------------------------------------------------------------
-
-        # if buffer_voltages:
-
-        #     buffer_voltage_median = median(buffer_voltages)
-
-        #     print(
-        #         f"[Cell {i + 1}] "
-        #         f"INA219 0x{INA219_ADDRESSES[i]:02X} "
-        #         f"Buffer Voltage: "
-        #         f"{buffer_voltage_median:.1f} mV"
-        #     )
-
-        #     voltage_buffer.append(
-        #         int(round(buffer_voltage_median))
-        #     )
-
-        # else:
-
-        #     print(
-        #         f"[Cell {i + 1}] "
-        #         f"Could not read INA219"
-        #     )
-
-        #     voltage_buffer.append(0)
 
 
+    # -------------------------------------------------------------------------
+    # Process voltage data
+    # -------------------------------------------------------------------------
 
+    # TODO: Remove individual and series mode
 
-# -------------------------------------------------------------------------
-# Process voltage data
-# -------------------------------------------------------------------------
-
-device_mode = config.get(
-    "measurement_mode",
-    {}
-).get(
-    "device_mode",
-    "individual"
-)
-
-print("CELLS:", CELLS)
-print("voltage_buffer:", voltage_buffer)
-print("length:", len(voltage_buffer))
-
-
-try:
-
-    # if device_mode == "series":
-
-    #     voltage_data = {}
-    #     current_data = {}
-
-    #     previous = 0
-
-    #     for i in range(CELLS):
-
-    #         voltage_data[f"cell_{i}"] = (
-    #             voltage_buffer[i] - previous
-    #         )
-
-    #         previous = voltage_buffer[i]
-
-    # else:
-
-    voltage_data = {
-        f"cell_{i}": voltage_buffer[i]
-        for i in range(CELLS)
-    }
-
-    current_data = {
-        f"cell_{i}": current_buffer[i]
-        for i in range(CELLS)
-    }
-
-except IndexError as e:
-
-    print(f"Voltage buffer index error: {e}")
-
-    voltage_data = {}
-    current_data = {}
-
-
-# -------------------------------------------------------------------------
-# Send voltage information
-# -------------------------------------------------------------------------
-
-# print(voltage_data)
-# print(current_data)
-
-if voltage_data:
-
-    send_power_sensors_info(
-        config,
-        "[Power Sensors]",
-        voltage_data,
-        current_data
+    device_mode = config.get(
+        "measurement_mode",
+        {}
+    ).get(
+        "device_mode",
+        "individual"
     )
 
+    print("CELLS:", CELLS)
+    print("voltage_buffer:", voltage_buffer)
+    print("length:", len(voltage_buffer))
 
-update_yaml_flag("activity", "voltage", 0)
+
+    try:
+
+        voltage_data = {
+            f"cell_{i}": voltage_buffer[i]
+            for i in range(CELLS)
+        }
+
+        current_data = {
+            f"cell_{i}": current_buffer[i]
+            for i in range(CELLS)
+        }
+
+    except IndexError as e:
+
+        print(f"Voltage buffer index error: {e}")
+
+        voltage_data = {}
+        current_data = {}
+
+
+    # -------------------------------------------------------------------------
+    # Send voltage information
+    # -------------------------------------------------------------------------
+
+    if voltage_data:
+        send_power_sensors_info(
+            config,
+            "[Power Sensors]",
+            voltage_data,
+            current_data
+        )
+
+    # Update config file to indicate voltage test is finished
+    update_yaml_flag("activity", "voltage", 0)

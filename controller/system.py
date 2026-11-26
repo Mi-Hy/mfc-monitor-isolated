@@ -1,15 +1,10 @@
 
-import yaml
 import time
 import psutil
 import subprocess
 from lib.influxdb import *
 from lib.configuration import *
-import asyncio
-import socket
 from lib.ds18b20 import *
-# from lib.socket_helper import *
-# from atlas_scientific.poll import *
 from lib.sensors import *
 from lib.i2c_manager import *
 
@@ -33,7 +28,19 @@ def get_disk_usage():
     except Exception:
         return None 
 
+# -------------------------------------------------------------------------
+# Main
+# -------------------------------------------------------------------------
+
 if __name__ == "__main__":
+
+    # Get activity status from config file
+    while get_activity_status() == 1:
+        time.sleep(1)
+        print("[System] ⏳ Waiting for other scripts to complete...")
+
+    # Update config file to indicate voltage test is running
+    update_yaml_flag("activity", "system", 1)
 
     system_data = {
         "system-cpu-temp": get_cpu_temp(),
@@ -81,3 +88,6 @@ if __name__ == "__main__":
 
     # Send data to influxdb server
     send_system_info(config, "[System]", temperature_data, system_data, water_quality)
+
+    # Update config file to indicate voltage test is finished
+    update_yaml_flag("activity", "system", 0)

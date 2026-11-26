@@ -9,6 +9,7 @@ from lib.influxdb import *
 from lib.configuration import *
 from lib.sensors import *
 from lib.i2c_manager import *
+from lib.cv_load import *
 
 import socket
 import threading
@@ -257,6 +258,30 @@ def check_sensor_functions(config):
     #     )
     #     update_yaml_flag("sensor_requests", "ec_cal_value_high", 0)
 
+def check_cv_load_settings(config):
+
+    # Check if CV Load settings have changed and if no other script is running
+    if config.get("cv_load", {}).get("update", 0) == 1:
+
+        if get_activity_status() == 0:
+
+            print("CV Load settings changed!")
+
+            # Update flag in config file to indicate CV Load adjustment is in progress
+            update_yaml_flag("activity", "adjusting_cv_load", 1)
+
+            # Update CV Load settings
+            update_cv_load(config["cv_load"])
+
+            # Update flag in config file to indicate CV Load adjustment is finished
+            update_yaml_flag("activity", "adjusting_cv_load", 0)
+
+            # Update flag in config file
+            update_yaml_flag("cv_load","update", 0)
+        else:
+            time.sleep(0.1)  # Sleep briefly to avoid busy waiting
+
+
 def main_loop():
 
     #   Load YAML config file
@@ -357,6 +382,9 @@ def main_loop():
 
         #   Check hydroponics sensors
         check_sensor_functions(config)
+
+        #   Check CV load settings
+        check_cv_load_settings(config)
 
 if __name__ == "__main__":
 

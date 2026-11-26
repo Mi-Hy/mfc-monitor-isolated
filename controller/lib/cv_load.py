@@ -37,20 +37,6 @@ i2c = busio.I2C(board.SCL, board.SDA)
 # DAC functie
 # ============================================================
 
-# def set_voltage(dac, voltage):
-#     """
-#     Stel de uitgangsspanning van een MCP4725 in.
-#     Resolutie: 12 bit (0-4095).
-#     """
-
-#     voltage = max(0.0, min(voltage, VREF))
-#     value = int((voltage / VREF) * 4095)
-
-#     dac.raw_value = value
-
-#     return value
-
-
 def set_voltage(bus, voltage):
     if not 0 <= voltage <= VREF:
         raise ValueError(f"Voltage must be between 0 and {VREF} V")
@@ -97,17 +83,11 @@ def update_cv_load(config=cv_load):
                 # Select the PCA9548A channel
                 pca9548_select(bus, channel)
 
-                # time.sleep(0.01)  # Wait a bit for stability
-
                 # Set the voltage on the DAC for the selected channel
                 value = set_voltage(bus, voltage)
 
-                # time.sleep(0.01)  # Wait a bit for stability
-
                 # Disable all channels after setting the voltage
                 pca9548_disable(bus)
-
-                # time.sleep(0.01)  # Wait a bit for stability
 
                 print(
                     f"[CV LOAD] Channel {channel}: "
@@ -118,61 +98,6 @@ def update_cv_load(config=cv_load):
                 print(
                     f"[CV LOAD] ERROR channel {channel}: {e}"
                 )
-
-
-
-# def update_cv_load(config=cv_load):
-
-#     active = bool(config.get("active", 0))
-
-#     print(f"\n[CV LOAD] Active: {active}")
-
-#     for channel in range(8):
-
-#         channel_name = f"c{channel + 1}_voltage"
-
-#         if active:
-#             voltage = float(config.get(channel_name, 0.3))
-#         else:
-#             voltage = INACTIVE_VOLTAGE
-
-#         try:
-#             # Selecteer PCA9548A kanaal
-#             pca9548_select(channel)
-
-#             time.sleep(0.2)  # Wacht even voor stabiliteit
-
-#             # Initialiseer DAC op geselecteerd kanaal
-#             # dac = adafruit_mcp4725.MCP4725(
-#             #     i2c,
-#             #     address=I2C_ADDRESS
-#             # )
-
-#             # Stel DAC-spanning in
-#             value = set_voltage(MCP4725_ADDRESS, voltage)
-
-#             time.sleep(0.2)  # Wacht even voor stabiliteit
-
-#             print(
-#                 f"[CV LOAD] Channel {channel}: "
-#                 f"{voltage:.3f} V (DAC: {value})"
-#             )
-
-#             pca9548_disable()
-
-#             time.sleep(0.2)  # Wacht even voor stabiliteit
-
-#         except Exception as e:
-#             print(
-#                 f"[CV LOAD] ERROR channel {channel}: {e}"
-#             )
-
-#     # Schakel alle PCA9548A kanalen uit
-#     try:
-#         pca9548_disable()
-#     except Exception as e:
-#         print(f"[CV LOAD] Multiplexer disable error: {e}")
-
 
 # ============================================================
 # Main
