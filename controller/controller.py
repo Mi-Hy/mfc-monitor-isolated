@@ -8,7 +8,6 @@ from filelock import FileLock
 from lib.influxdb import *
 from lib.configuration import *
 from lib.sensors import *
-from lib.i2c_manager import *
 from lib.cv_load import *
 
 import socket
@@ -148,6 +147,10 @@ def update_automations(config):
 def check_sensor_functions(config):
 
     if config.get("sensor_requests", {}).get("update", 0) == 1:
+
+        # from lib.i2c_manager import *
+        import importlib
+        i2c_manager = importlib.import_module("lib.i2c_manager")
 
         # Get activity status from config file
         while get_activity_status() == 1:
