@@ -19,41 +19,37 @@ def gpio4_low():
     GPIO.output(4, GPIO.LOW)
 
 
-def pca9548_select(channel):
+def pca9548_select(bus, channel):
     if not 0 <= channel <= 7:
         raise ValueError("Channel must be between 0 and 7")
 
-    with SMBus(I2C_BUS) as bus:
-        # Alle kanalen uitschakelen
-        bus.write_byte(PCA9548_ADDRESS, 0x00)
+    # Alle kanalen uitschakelen
+    bus.write_byte(PCA9548_ADDRESS, 0x00)
 
-        # Enkel het gewenste kanaal activeren
-        bus.write_byte(PCA9548_ADDRESS, 1 << channel)
+    # Enkel het gewenste kanaal activeren
+    bus.write_byte(PCA9548_ADDRESS, 1 << channel)
 
-        # Controleer de ingestelde kanaalstatus
-        value = bus.read_byte(PCA9548_ADDRESS)
+    # Controleer de ingestelde kanaalstatus
+    value = bus.read_byte(PCA9548_ADDRESS)
 
-        if value != (1 << channel):
-            raise RuntimeError(
-                f"PCA9548A channel selection failed: 0x{value:02X}"
-            )
+    if value != (1 << channel):
+        raise RuntimeError(
+            f"PCA9548A channel selection failed: 0x{value:02X}"
+        )
 
-
-def pca9548_disable():
+def pca9548_disable(bus):
     """Schakel alle PCA9548A kanalen uit."""
-    with SMBus(I2C_BUS) as bus:
-        bus.write_byte(PCA9548_ADDRESS, 0x00)
+    bus.write_byte(PCA9548_ADDRESS, 0x00)
 
 
-def pca9548_enable_all():
+def pca9548_enable_all(bus):
     """Schakel alle PCA9548A kanalen in."""
-    with SMBus(I2C_BUS) as bus:
-        bus.write_byte(PCA9548_ADDRESS, 0xFF)
+    bus.write_byte(PCA9548_ADDRESS, 0xFF)
 
-def connect_water_quality_sensors():
+def connect_water_quality_sensors(bus):
     """Connect water quality sensors to the I2C bus."""        
     # Disable PCA9548 multiplexer to avoid I2C conflicts with water quality sensors
-    pca9548_disable()
+    pca9548_disable(bus)
 
     # Connect water quality sensors to the I2C bus
     gpio4_high()
