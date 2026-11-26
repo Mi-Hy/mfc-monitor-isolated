@@ -57,8 +57,8 @@ def get_activity_status():
         # Get the 'activity'-section from the config, defaulting to an empty dict if not present
         activity = (config or {}).get("activity") or {}
 
-        for key in activity:
-            if activity[key] == 1:
+        for key, value in activity.items():
+            if value == 1:
                 script_name = os.path.basename(__file__)
                 print(f"⚠️ Activity active: script={script_name}, key={key}, value={value}")
                 return 1
