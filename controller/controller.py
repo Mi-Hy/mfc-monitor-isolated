@@ -146,117 +146,95 @@ def update_automations(config):
         load_scheduler.stop()   
 
 def check_sensor_functions(config):
-    # pH
-    if config.get("sensor_requests", {}).get("ph_cal_req_status", 0) == 1:
+
+    # Get config file
+    config = retrieve_yaml_file()
+
+    # Get activity status from config file
+    while get_activity_status() == 1:
+        time.sleep(1)
+        print("[System] ⏳ Waiting for other scripts to complete...")
+
+    # Update config file to indicate atlas sensor calibration is running
+    update_yaml_flag("activity", "atlas_sensor_calibration", 1)
+
+    if config.get("sensor_requests", {}).get("update", 0) == 1:
+
         connect_water_quality_sensors()
-        ph_cal()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ph_cal_req_status", 0)
 
-    if config.get("sensor_requests", {}).get("ph_cal_req_clear", 0) == 1:
-        connect_water_quality_sensors()
-        ph_cal_clear()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
+        # pH
+        if config.get("sensor_requests", {}).get("ph_cal_req_status", 0) == 1:
+            ph_cal()
+            update_yaml_flag("sensor_requests", "ph_cal_req_status", 0)
 
-    if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
-        connect_water_quality_sensors()
-        ph_cal_low()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
+        if config.get("sensor_requests", {}).get("ph_cal_req_clear", 0) == 1:
+            ph_cal_clear()
+            update_yaml_flag("sensor_requests", "ph_cal_req_clear", 0)
 
-    if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
-        connect_water_quality_sensors()
-        ph_cal_mid()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
+        if config.get("sensor_requests", {}).get("ph_cal_req_low4", 0) == 1:
+            ph_cal_low()
+            update_yaml_flag("sensor_requests", "ph_cal_req_low4", 0)
 
-    if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
-        connect_water_quality_sensors()
-        ph_cal_high()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ph_cal_req_high10", 0)
+        if config.get("sensor_requests", {}).get("ph_cal_req_mid7", 0) == 1:
+            ph_cal_mid()
+            update_yaml_flag("sensor_requests", "ph_cal_req_mid7", 0)
 
-    # Dissolved Oxygen (DO)
-    if config.get("sensor_requests", {}).get("do_cal_req_status", 0) == 1:
-        connect_water_quality_sensors()
-        do_cal()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "do_cal_req_status", 0)
+        if config.get("sensor_requests", {}).get("ph_cal_req_high10", 0) == 1:
+            ph_cal_high()
+            update_yaml_flag("sensor_requests", "ph_cal_req_high10", 0)
 
-    if config.get("sensor_requests", {}).get("do_cal_req_clear", 0) == 1:
-        connect_water_quality_sensors()
-        do_cal_clear()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "do_cal_req_clear", 0)
+        # Dissolved Oxygen (DO)
+        if config.get("sensor_requests", {}).get("do_cal_req_status", 0) == 1:
+            do_cal()
+            update_yaml_flag("sensor_requests", "do_cal_req_status", 0)
 
-    if config.get("sensor_requests", {}).get("do_cal_req_aol", 0) == 1:
-        connect_water_quality_sensors()
-        do_cal_aol()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "do_cal_req_aol", 0)
+        if config.get("sensor_requests", {}).get("do_cal_req_clear", 0) == 1:
+            do_cal_clear()
+            update_yaml_flag("sensor_requests", "do_cal_req_clear", 0)
 
-    if config.get("sensor_requests", {}).get("do_cal_req_null", 0) == 1:
-        connect_water_quality_sensors()
-        do_cal_null()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "do_cal_req_null", 0)
+        if config.get("sensor_requests", {}).get("do_cal_req_aol", 0) == 1:
+            do_cal_aol()
+            update_yaml_flag("sensor_requests", "do_cal_req_aol", 0)
 
-    # Electrical Conductivity (EC)
-    if config.get("sensor_requests", {}).get("ec_cal_req_status", 0) == 1:
-        connect_water_quality_sensors()
-        ec_cal()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ec_cal_req_status", 0)
+        if config.get("sensor_requests", {}).get("do_cal_req_null", 0) == 1:
+            do_cal_null()
+            update_yaml_flag("sensor_requests", "do_cal_req_null", 0)
 
-    if config.get("sensor_requests", {}).get("ec_cal_req_clear", 0) == 1:
-        connect_water_quality_sensors()
-        ec_cal_clear()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ec_cal_req_clear", 0)
+        # Electrical Conductivity (EC)
+        if config.get("sensor_requests", {}).get("ec_cal_req_status", 0) == 1:
+            ec_cal()
+            update_yaml_flag("sensor_requests", "ec_cal_req_status", 0)
 
-    if config.get("sensor_requests", {}).get("ec_cal_req_dry", 0) == 1:
-        connect_water_quality_sensors()
-        ec_cal_dry()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ec_cal_req_dry", 0)
+        if config.get("sensor_requests", {}).get("ec_cal_req_clear", 0) == 1:
+            ec_cal_clear()
+            update_yaml_flag("sensor_requests", "ec_cal_req_clear", 0)
 
-    if config.get("sensor_requests", {}).get("ec_cal_req_one", 0) == 1:
-        connect_water_quality_sensors()
-        ec_cal_one()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ec_cal_req_one", 0)
+        if config.get("sensor_requests", {}).get("ec_cal_req_dry", 0) == 1:
+            ec_cal_dry()
+            update_yaml_flag("sensor_requests", "ec_cal_req_dry", 0)
 
-    if config.get("sensor_requests", {}).get("ec_cal_req_low", 0) == 1:
-        connect_water_quality_sensors()
-        ec_cal_low()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ec_cal_req_low", 0)
+        if config.get("sensor_requests", {}).get("ec_cal_req_one", 0) == 1:
+            ec_cal_one()
+            update_yaml_flag("sensor_requests", "ec_cal_req_one", 0)
 
-    if config.get("sensor_requests", {}).get("ec_cal_req_high", 0) == 1:
-        connect_water_quality_sensors()
-        ec_cal_high()
-        disconnect_water_quality_sensors()
-        update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
+        if config.get("sensor_requests", {}).get("ec_cal_req_low", 0) == 1:
+            ec_cal_low()
+            update_yaml_flag("sensor_requests", "ec_cal_req_low", 0)
 
-    # # EC calibration values
-    # if config.get("sensor_requests", {}).get("ec_cal_value_one", 0) != 0:
-    #     ec_cal_set_value_one(
-    #         config["sensor_requests"]["ec_cal_value_one"]
-    #     )
-    #     update_yaml_flag("sensor_requests", "ec_cal_value_one", 0)
+        if config.get("sensor_requests", {}).get("ec_cal_req_high", 0) == 1:
+            ec_cal_high()
+            update_yaml_flag("sensor_requests", "ec_cal_req_high", 0)
 
-    # if config.get("sensor_requests", {}).get("ec_cal_value_low", 0) != 0:
-    #     ec_cal_set_value_low(
-    #         config["sensor_requests"]["ec_cal_value_low"]
-    #     )
-    #     update_yaml_flag("sensor_requests", "ec_cal_value_low", 0)
+    # Disable update flag
+    if get_sensor_req_status() == 0:
+        # Update flag in config file
+        update_yaml_flag("sensor_requests", "update", 0)
 
-    # if config.get("sensor_requests", {}).get("ec_cal_value_high", 0) != 0:
-    #     ec_cal_set_value_high(
-    #         config["sensor_requests"]["ec_cal_value_high"]
-    #     )
-    #     update_yaml_flag("sensor_requests", "ec_cal_value_high", 0)
+        # Disable activity flag
+        update_yaml_flag("activity", "atlas_sensor_calibration", 0)       
+
+    # Disconnect water quality sensors to avoid conflicts with other I2C devices
+    disconnect_water_quality_sensors()
 
 def check_cv_load_settings(config):
 
@@ -333,15 +311,6 @@ def main_loop():
             
             # Update flag in config file
             update_yaml_flag("timer_settings","update", 0)
-
-
-        # if config.get("activity", {}).get("update", 0) == 1:
-        #     print("Single settings changed!")
-
-        #     # Do single measurements
-
-        #     # Update flag in config file
-        #     update_yaml_flag("activity","update", 0)
 
 
         # Trigger measurement script

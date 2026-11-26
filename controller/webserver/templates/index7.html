@@ -1789,7 +1789,7 @@
             }
 
             async function sendCalibrationRequest(requestKey, valueKey = null, value = null) {
-                const payload = { sensor_requests: { [requestKey]: 1 } };
+                const payload = { sensor_requests: { [requestKey]: 1, update: 1 } };
                 if (valueKey) {
                     const trimmed = String(value ?? "").trim();
                     if (!trimmed || !Number.isFinite(Number(trimmed)) || Number(trimmed) <= 0) {

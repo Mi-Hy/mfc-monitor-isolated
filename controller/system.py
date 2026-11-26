@@ -42,7 +42,7 @@ if __name__ == "__main__":
         time.sleep(1)
         print("[System] ⏳ Waiting for other scripts to complete...")
 
-    # Update config file to indicate voltage test is running
+    # Update config file to indicate system test is running
     update_yaml_flag("activity", "system", 1)
 
     system_data = {
@@ -92,5 +92,5 @@ if __name__ == "__main__":
     # Send data to influxdb server
     send_system_info(config, "[System]", temperature_data, system_data, water_quality)
 
-    # Update config file to indicate voltage test is finished
+    # Update config file to indicate system test is finished
     update_yaml_flag("activity", "system", 0)

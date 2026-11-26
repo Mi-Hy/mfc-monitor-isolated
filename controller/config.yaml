@@ -1,18 +1,30 @@
 activity:
+  adjusting_cv_load: 0
   load: 0
   system: 0
   voltage: 0
-  adjusting_cv_load: 0
+  atlas_sensor_calibration: 0
 automations:
   auto_load_poll: 0
   auto_sys_poll: 0
   auto_volt_poll: 1
   update: 0
+cv_load:
+  active: 1
+  c1_voltage: 0.3
+  c2_voltage: 0.3
+  c3_voltage: 0.3
+  c4_voltage: 0.3
+  c5_voltage: 0.3
+  c6_voltage: 0.3
+  c7_voltage: 0.3
+  c8_voltage: 0.3
+  update: 0
 fixed_configurations:
+  cells: 1
   device_name: MFC02
   firmware_version: v0.0.1
   sensor_type: INA226
-  cells: 1
 influxdb:
   bucket: mfc-data
   org: Dramco
@@ -41,7 +53,8 @@ sensor_requests:
   ph_cal_req_high10: 0
   ph_cal_req_low4: 0
   ph_cal_req_mid7: 0
-  ph_cal_req_status: 0
+  ph_cal_req_status: 1
+  update: 1
 sensor_responses:
   do_cal_rsp_status: 0
   do_cal_ts_aol: 0
@@ -73,14 +86,3 @@ trigger:
   load: 0
   system: 0
   voltage: 0
-cv_load:
-  update: 0
-  active: 1
-  c1_voltage: 0.3
-  c2_voltage: 0.3
-  c3_voltage: 0.3
-  c4_voltage: 0.3
-  c5_voltage: 0.3
-  c6_voltage: 0.3
-  c7_voltage: 0.3
-  c8_voltage: 0.3

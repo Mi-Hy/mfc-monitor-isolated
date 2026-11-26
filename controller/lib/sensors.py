@@ -314,8 +314,6 @@ def ph_cal_high():
     return response
 
 
-
-
 # Dissolved Oxygen (DO)
 
 def do_cal():
@@ -451,7 +449,6 @@ def ec_cal_high():
 
     update_yaml_flag("sensor_responses", "ec_cal_ts_high", int(time.time()))
     return response
-
 
 
 def get_ec_cal_value(key):
