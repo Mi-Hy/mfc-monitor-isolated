@@ -50,7 +50,7 @@ def update_yaml_flag(TAGlvl1, TAGlvl2, value):
 
 
 #   Function to check if any other script is running
-def get_activity_status(script_name):
+def get_activity_status():
     try:
         config = retrieve_yaml_file()
 
@@ -63,5 +63,5 @@ def get_activity_status(script_name):
 
         return 0
     except Exception as e:
-        print(f"⚠️ Error occurred while fetching activity status for {script_name}: {e}")
+        print(f"⚠️ Error occurred: {e}")
         return 1
