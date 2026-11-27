@@ -102,7 +102,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
                 address=ina_addresses[cell],
                 bus=1,
                 shunt_resistance=0.002,
-                max_expected_current=0.8
+                max_expected_current=20
             )
 
             #debug
