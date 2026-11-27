@@ -168,8 +168,8 @@ if __name__ == "__main__":
 
     for i in range(cells):
         try:
-            voltage_buffer.append(ina_devices[i].bus_voltage * 1000)  # Convert V to mV
-            current_buffer.append(ina_devices[i].current)  # Current in mA for INA219, A for INA226
+            voltage_buffer.append(round(ina_devices[i].bus_voltage * 1000, 3))  # Convert V to mV
+            current_buffer.append(round(ina_devices[i].current, 3))  # Current in mA for INA219, A for INA226
 
         except Exception as e:
 
