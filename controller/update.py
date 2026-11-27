@@ -101,7 +101,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
             ina = INA226(
                 address=ina_addresses[cell],
                 bus=1,
-                shunt_resistance=0.1,
+                shunt_resistance=0.002,
                 max_expected_current=0.8
             )
 
@@ -248,9 +248,8 @@ if __name__ == "__main__":
                 elif sensor_type == "INA226":
                     # INA226 driver returns A -> mA
                     current_ma = current * 1e3 
-                    # * 141/100
 
-                buffer_voltages.append(voltage_mv*9516/10000)
+                buffer_voltages.append(voltage_mv)
                 buffer_currents.append(current_ma)
 
             except Exception as e:
