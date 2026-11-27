@@ -166,6 +166,8 @@ if __name__ == "__main__":
 
     ina_devices = initialize_ina_devices(sensor_type, cells, ina_addresses)
 
+    exit()
+
 
     for i in range(cells):
 
