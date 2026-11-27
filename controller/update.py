@@ -105,12 +105,12 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
                 max_expected_current=0.8192
             )
 
-            #debug
-            print(ina.diagnostics())
-            raw = ina._read_register(0x01)
-            print(f"Raw shunt register: 0x{raw:04X}")
-            print(f"Raw shunt register: {raw:d}")
-            print(f"Shunt voltage: {raw * 2.5e-6 * 1000:.3f} mV")
+            # #debug
+            # print(ina.diagnostics())
+            # raw = ina._read_register(0x01)
+            # print(f"Raw shunt register: 0x{raw:04X}")
+            # print(f"Raw shunt register: {raw:d}")
+            # print(f"Shunt voltage: {raw * 2.5e-6 * 1000:.3f} mV")
 
         else:
             raise ValueError(
@@ -165,6 +165,25 @@ if __name__ == "__main__":
     ina_addresses = INA219_ADDRESSES if sensor_type == "INA219" else INA226_ADDRESSES
 
     ina_devices = initialize_ina_devices(sensor_type, cells, ina_addresses)
+
+    for i in range(cells):
+        try:
+            voltage_buffer.append(ina_devices[i].bus_voltage * 1000)  # Convert V to mV
+            current_buffer.append(ina_devices[i].current)  # Current in mA for INA219, A for INA226
+
+        except Exception as e:
+
+            print(
+                f"[Cell {i + 1}] "
+                f"{sensor_type} read error: {e}"
+            )
+
+    print("CELLS:", cells)
+    print("voltage_buffer:", voltage_buffer)
+    print("current_buffer:", current_buffer)
+    print("length:", len(voltage_buffer))
+
+
 
     exit()
 
