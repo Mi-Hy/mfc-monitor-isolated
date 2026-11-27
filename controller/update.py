@@ -434,14 +434,16 @@ except IndexError as e:
 # print(voltage_data)
 # print(current_data)
 
-if voltage_data:
 
-    send_power_sensors_info(
-        config,
-        "[Power Sensors]",
-        voltage_data,
-        current_data
-    )
+#TODO: Uncomment the following lines to send voltage and current data to InfluxDB
+# if voltage_data:
+
+#     send_power_sensors_info(
+#         config,
+#         "[Power Sensors]",
+#         voltage_data,
+#         current_data
+#     )
 
 
 update_yaml_flag("activity", "voltage", 0)
