@@ -102,7 +102,7 @@ def initialize_ina_devices(sensor_type, cells, ina_addresses):
                 address=ina_addresses[cell],
                 bus=1,
                 shunt_resistance=0.1,
-                max_expected_current=0.8
+                max_expected_current=0.8192
             )
 
             #debug
@@ -376,13 +376,13 @@ if __name__ == "__main__":
 # Process voltage data
 # -------------------------------------------------------------------------
 
-device_mode = config.get(
-    "measurement_mode",
-    {}
-).get(
-    "device_mode",
-    "individual"
-)
+# device_mode = config.get(
+#     "measurement_mode",
+#     {}
+# ).get(
+#     "device_mode",
+#     "individual"
+# )
 
 print("CELLS:", cells)
 print("voltage_buffer:", voltage_buffer)
