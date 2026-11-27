@@ -25,7 +25,7 @@ INA219_ADDRESSES = [
 ]
 
 INA226_ADDRESSES = [
-    0x44,
+    0x40,
     0x41,
     0x42,
     0x43,
